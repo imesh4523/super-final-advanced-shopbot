@@ -260,8 +260,8 @@ export async function registerRoutes(
     const agentBase = (process.env.DO_AGENT_ENDPOINT || "https://tltf2x6wzq5ssf5yr7655cuu.agents.do-ai.run").replace(/\/$/, "");
     const agentEndpoint = `${agentBase}/api/v1/chat/completions`;
 
-    // Use DO API key from env, or fall back to the public chatbot-id (already embedded in widget)
-    const agentKey = process.env.DO_AGENT_KEY || "iHsdn2b6CxylY445eQNKY8M7VP2eUwgV";
+    // Use DO API key from env, or fall back to the configured agent key
+    const agentKey = process.env.DO_AGENT_KEY || "7--sbBHHxkaTxLSQXb_yjABVK1HVVupJ";
 
     try {
       console.log(`[AI Chat] Forwarding to: ${agentEndpoint}`);
