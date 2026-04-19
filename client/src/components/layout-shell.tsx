@@ -34,11 +34,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProfileButton } from "./profile-button";
 import { SupportButton } from "./support-button";
 import { ThemeToggle } from "./theme-toggle";
+import { AIChatbot } from "./ai-chatbot";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { user, logout } = useAuth();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -127,6 +129,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           <div className="flex justify-center mb-4">
             <ThemeToggle />
           </div>
+          <SupportButton onOpen={() => setIsChatOpen(true)} />
           <div className="relative py-4 group/watermark">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover/watermark:opacity-100 transition-opacity duration-700" />
             <div className="relative text-[10px] text-white/20 font-black uppercase tracking-[0.3em] text-center transition-all duration-500 group-hover/watermark:text-purple-400 group-hover/watermark:scale-110 group-hover/watermark:tracking-[0.4em] drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
@@ -180,6 +183,9 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </main>
+
+      {/* AI Concierge Chatbot */}
+      <AIChatbot isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
     </div>
   );
 }
