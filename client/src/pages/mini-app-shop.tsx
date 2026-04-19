@@ -800,7 +800,7 @@ export default function MiniAppShop() {
         </div>
         <div className="space-y-1">
           <h5 className="text-sm font-black text-amber-900 tracking-tight uppercase">Support Security</h5>
-          <p className="text-[11px] font-bold text-amber-700/70 leading-relaxed uppercase">Your credentials are encrypted end-to-end. Contact @admin for bulk inquiries.</p>
+          <p className="text-[11px] font-bold text-amber-700/70 leading-relaxed uppercase">Your credentials are encrypted end-to-end. Contact @rochana_imesh for bulk inquiries.</p>
         </div>
       </div>
     </div>
