@@ -867,16 +867,16 @@ export default function MiniAppShop() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <ThemeToggle />
             <motion.div 
               whileTap={{ scale: 0.95 }}
-              className="px-5 py-2.5 bg-neutral-50 rounded-2xl border border-neutral-100 flex items-center gap-3 shadow-inner"
+              className="px-5 py-2.5 bg-neutral-50 dark:bg-neutral-900 rounded-2xl border border-neutral-100 dark:border-neutral-800 flex items-center gap-3 shadow-inner"
             >
               <Wallet className="w-4 h-4 text-purple-600" />
-              <span className="text-lg font-black tracking-tighter text-neutral-900 leading-none italic">
+              <span className="text-lg font-black tracking-tighter text-neutral-900 dark:text-white leading-none italic">
                 ${((user?.balance || 0) / 100).toFixed(2)}
               </span>
             </motion.div>
+            <ThemeToggle className="bg-neutral-50 dark:bg-neutral-900 border-neutral-100 dark:border-neutral-800 text-neutral-900 dark:text-white hover:bg-neutral-200 dark:hover:bg-neutral-800 shadow-inner" />
           </div>
         </div>
       </header>
