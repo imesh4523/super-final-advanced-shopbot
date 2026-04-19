@@ -11,8 +11,6 @@ interface AIChatbotProps {
   onClose: () => void;
 }
 
-const AGENT_URL =
-  "https://tltf2x6wzq5ssf5yr7655cuu.agents.do-ai.run/api/v1/chat/completions";
 
 export function AIChatbot({ isOpen, onClose }: AIChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([
@@ -47,7 +45,7 @@ export function AIChatbot({ isOpen, onClose }: AIChatbotProps) {
     setIsLoading(true);
 
     try {
-      const res = await fetch(AGENT_URL, {
+      const res = await fetch("/api/support/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -57,9 +55,7 @@ export function AIChatbot({ isOpen, onClose }: AIChatbotProps) {
 
       if (res.ok) {
         const data = await res.json();
-        const reply =
-          data.choices?.[0]?.message?.content ||
-          "Sorry, I couldn't process that request.";
+        const reply = data.answer || "Sorry, I couldn't process that request.";
         setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       } else {
         throw new Error("API error");
@@ -77,6 +73,7 @@ export function AIChatbot({ isOpen, onClose }: AIChatbotProps) {
       setIsLoading(false);
     }
   };
+
 
   if (!isOpen) return null;
 

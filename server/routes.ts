@@ -251,42 +251,51 @@ export async function registerRoutes(
    * Proxies chat messages from the frontend to DigitalOcean Agent Platform.
    */
   app.post("/api/support/chat", async (req, res) => {
-    const { message } = req.body;
-    // Environment variables for DO Agent (Correct API path is /api/v1/chat)
-    let agentEndpoint = process.env.DO_AGENT_ENDPOINT || "https://e6tdsfuawkruwzbm435onfcs.agents.do-ai.run";
-    if (!agentEndpoint.endsWith('/api/v1/chat')) {
-      agentEndpoint = agentEndpoint.replace(/\/$/, '') + '/api/v1/chat';
+    const { messages } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ message: "messages array required" });
     }
-    
-    const agentKey = process.env.DO_AGENT_KEY || "UWIwcaqYIB4tlcTxr8mwyjwYFGshJR2F";
+
+    // Use the correct agent base URL from env or fallback to the configured agent
+    const agentBase = (process.env.DO_AGENT_ENDPOINT || "https://tltf2x6wzq5ssf5yr7655cuu.agents.do-ai.run").replace(/\/$/, "");
+    const agentEndpoint = `${agentBase}/api/v1/chat/completions`;
+
+    // Use DO API key from env, or fall back to the public chatbot-id (already embedded in widget)
+    const agentKey = process.env.DO_AGENT_KEY || "iHsdn2b6CxylY445eQNKY8M7VP2eUwgV";
 
     try {
-      console.log(`Forwarding chat to DO Agent: ${agentEndpoint}`);
-      const response = await axios.post(agentEndpoint, {
-        message: message,
-        stream: false
-      }, {
-        headers: {
-          'Authorization': `Bearer ${agentKey}`,
-          'Content-Type': 'application/json'
+      console.log(`[AI Chat] Forwarding to: ${agentEndpoint}`);
+      const response = await axios.post(
+        agentEndpoint,
+        { messages, stream: false },
+        {
+          headers: {
+            Authorization: `Bearer ${agentKey}`,
+            "Content-Type": "application/json",
+          },
+          timeout: 30000,
         }
-      });
+      );
 
-      // DigitalOcean Agent Platform usually returns the text in response.data.message or response.data.text
-      const botReply = response.data.message || response.data.text || response.data.answer || "I received empty data.";
-      res.json({ answer: botReply });
-      
+      // OpenAI-compatible response format
+      const reply =
+        response.data?.choices?.[0]?.message?.content ||
+        response.data?.message ||
+        response.data?.text ||
+        "I couldn't process that request.";
+      res.json({ answer: reply });
     } catch (err: any) {
-      console.error("❌ AI Chat Proxy Error Details:");
+      console.error("❌ AI Chat Proxy Error:");
       if (err.response) {
         console.error("Status:", err.response.status);
         console.error("Data:", JSON.stringify(err.response.data));
       } else {
         console.error("Message:", err.message);
       }
-      res.status(500).json({ message: "AI Agent is currently offline." });
+      res.status(500).json({ message: "AI Agent is currently unavailable." });
     }
   });
+
 
   // Get active products for the shop
   app.get("/api/mini/products", verifyMiniAppAuth, async (req, res) => {
