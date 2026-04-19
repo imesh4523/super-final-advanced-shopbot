@@ -41,6 +41,7 @@ import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Dialog,
@@ -865,15 +866,18 @@ export default function MiniAppShop() {
               </span>
             </div>
           </div>
-          <motion.div 
-            whileTap={{ scale: 0.95 }}
-            className="px-5 py-2.5 bg-neutral-50 rounded-2xl border border-neutral-100 flex items-center gap-3 shadow-inner"
-          >
-            <Wallet className="w-4 h-4 text-purple-600" />
-            <span className="text-lg font-black tracking-tighter text-neutral-900 leading-none italic">
-              ${((user?.balance || 0) / 100).toFixed(2)}
-            </span>
-          </motion.div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <motion.div 
+              whileTap={{ scale: 0.95 }}
+              className="px-5 py-2.5 bg-neutral-50 rounded-2xl border border-neutral-100 flex items-center gap-3 shadow-inner"
+            >
+              <Wallet className="w-4 h-4 text-purple-600" />
+              <span className="text-lg font-black tracking-tighter text-neutral-900 leading-none italic">
+                ${((user?.balance || 0) / 100).toFixed(2)}
+              </span>
+            </motion.div>
+          </div>
         </div>
       </header>
 
