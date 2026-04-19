@@ -556,7 +556,7 @@ export default function MiniAppShop() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between px-2">
-          <h3 className="text-lg font-black tracking-tighter flex items-center gap-2 text-neutral-800 uppercase italic">
+          <h3 className="text-lg font-black tracking-tighter flex items-center gap-2 text-neutral-800 dark:text-foreground uppercase italic">
             <StoreIcon className="w-5 h-5 text-purple-600" /> Market Hub
           </h3>
           <Badge variant="outline" className="text-[10px] border-purple-100 text-purple-600 font-black px-3 py-1 rounded-full uppercase">
@@ -579,14 +579,14 @@ export default function MiniAppShop() {
                     setPurchaseQuantity(1);
                     setSelectedProduct(product);
                   }}
-                  className={`group relative bg-white p-5 rounded-[2rem] border border-purple-50/50 shadow-sm hover:shadow-xl hover:border-purple-200 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center justify-between active:scale-[0.97]`}
+                  className={`group relative bg-white dark:bg-card p-5 rounded-[2rem] border border-purple-50/50 dark:border-white/10 shadow-sm hover:shadow-xl hover:border-purple-200 dark:hover:border-purple-500 hover:-translate-y-0.5 transition-all cursor-pointer flex items-center justify-between active:scale-[0.97]`}
                 >
                   <div className="flex items-center gap-5">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-inner ${theme.bg} ${theme.color} ${theme.hover} group-hover:text-white`}>
                       {theme.icon}
                     </div>
                     <div className="space-y-1">
-                      <h4 className="font-black text-neutral-900 tracking-tight text-base leading-tight">
+                      <h4 className="font-black text-neutral-900 dark:text-card-foreground tracking-tight text-base leading-tight">
                         {product.name}
                       </h4>
                       <div className="flex items-center gap-2.5">
@@ -599,7 +599,7 @@ export default function MiniAppShop() {
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <span className="font-black text-xl text-neutral-900 tracking-tighter">
+                    <span className="font-black text-xl text-neutral-900 dark:text-card-foreground tracking-tighter">
                       ${(product.price / 100).toFixed(2)}
                     </span>
                     <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-all shadow-sm ${theme.bg} ${theme.color} ${theme.hover} group-hover:text-white`}>
@@ -848,9 +848,9 @@ export default function MiniAppShop() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8f7ff] text-neutral-900 font-sans selection:bg-purple-200 pb-32">
+    <div className="min-h-screen bg-[#f8f7ff] dark:bg-background text-neutral-900 dark:text-foreground font-sans selection:bg-purple-200 pb-32">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur-2xl border-b border-purple-50/50 px-6 py-5">
+      <header className="sticky top-0 z-50 bg-white/70 dark:bg-background/80 backdrop-blur-2xl border-b border-purple-50/50 dark:border-white/10 px-6 py-5">
         <div className="flex items-center justify-between max-w-md mx-auto">
           <div className="flex items-center gap-3.5">
             <motion.div 
@@ -860,8 +860,8 @@ export default function MiniAppShop() {
               <UserAvatar fallback={UserIcon} className="w-full h-full" />
             </motion.div>
             <div className="flex flex-col">
-              <span className="text-[9px] font-black text-neutral-300 uppercase tracking-[0.25em] leading-none mb-1">Authenticated</span>
-              <span className="text-base font-black tracking-tighter text-neutral-900 leading-none italic">
+              <span className="text-[9px] font-black text-neutral-400 dark:text-neutral-500 uppercase tracking-[0.25em] leading-none mb-1">Authenticated</span>
+              <span className="text-base font-black tracking-tighter text-neutral-900 dark:text-white leading-none italic">
                 {user?.firstName?.toUpperCase() || "ACCESS_DENIED"}
               </span>
             </div>
