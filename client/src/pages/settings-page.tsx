@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Bot, Save, Loader2, Sparkles, Lock } from "lucide-react";
+import { Bot, Save, Loader2, Sparkles, Lock, Megaphone } from "lucide-react";
 
 export default function SettingsPage() {
   const { toast } = useToast();
@@ -621,6 +621,41 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
+      <div className="max-w-2xl">
+        <Card className="glass-card border-0">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Megaphone className="w-5 h-5 text-purple-400" />
+              Admin Notifications
+            </CardTitle>
+            <CardDescription className="text-white/60">
+              Enable native browser push notifications to receive alerts even when the dashboard is closed.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="flex items-center justify-between p-4 glass-panel rounded-xl border-white/5">
+              <div className="space-y-0.5">
+                <Label className="text-white font-bold">Browser Push Alerts</Label>
+                <p className="text-xs text-white/40">
+                  {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' 
+                    ? "Notifications are enabled for this browser." 
+                    : "Receive instant alerts for new orders and deposits."}
+                </p>
+              </div>
+              <Button
+                variant={typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' ? "default" : "outline"}
+                size="sm"
+                disabled={typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted'}
+                onClick={() => window.dispatchEvent(new CustomEvent('trigger-push-setup'))}
+                className={typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' ? "bg-green-500 hover:bg-green-600" : "border-purple-500/30 text-purple-400 hover:bg-purple-500/10"}
+              >
+                {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' ? "Active" : "Enable Now"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0 overflow-hidden">
