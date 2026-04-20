@@ -120,7 +120,7 @@ function Router() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="shopbot-theme">
+    <ThemeProvider defaultTheme="light" storageKey="shopbot-theme">
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />

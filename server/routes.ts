@@ -1216,7 +1216,7 @@ app.post("/api/aws/accounts", isAuth, async (req, res) => {
     (async () => {
       try {
         console.log(`Initial 7-day sync for new account: ${account.name} (ID: ${account.id})`);
-        await fetchActivity(account, 7);
+        await fetchActivity(account, 30);
       } catch (syncErr) {
         console.error(`Initial sync failed for account ${account.id}:`, syncErr);
       }
@@ -1262,14 +1262,14 @@ app.get("/api/aws/activities", isAuth, async (req, res) => {
 
 app.post("/api/aws/refresh", isAuth, async (req, res) => {
   try {
-    const { accountIds } = req.body || {};
+    const { accountIds, lookbackDays = 7 } = req.body || {};
     const allAccounts = await storage.getAwsAccounts();
     const accounts = (accountIds && Array.isArray(accountIds) && accountIds.length > 0)
       ? allAccounts.filter(a => accountIds.includes(a.id))
       : allAccounts;
     const results = [];
     for (const account of accounts) {
-      const result = await fetchActivity(account);
+      const result = await fetchActivity(account, lookbackDays);
       results.push({ id: account.id, ...result });
     }
     res.json(results);

@@ -73,7 +73,7 @@ export default function AwsCheckerPage() {
   const [criticalOnly, setCriticalOnly] = useState(false);
   const [hideNoise, setHideNoise] = useState(false);
   const [focusedAccountId, setFocusedAccountId] = useState<number | null>(null);
-  const [timeFilter, setTimeFilter] = useState<"7d" | "14d" | "21d" | "30d" | "all">("7d");
+  const [timeFilter, setTimeFilter] = useState<"7d" | "14d" | "21d" | "30d" | "all">("all");
 
   const TIME_FILTER_OPTIONS = [
     { value: "7d",  label: "7 Days" },
@@ -129,8 +129,8 @@ export default function AwsCheckerPage() {
   });
 
   const refreshMutation = useMutation({
-    mutationFn: async (accountIds: number[] | undefined) => {
-      const body = (accountIds && accountIds.length > 0) ? { accountIds } : undefined;
+    mutationFn: async ({ accountIds, lookbackDays }: { accountIds?: number[], lookbackDays?: number }) => {
+      const body = { accountIds, lookbackDays };
       await apiRequest("POST", "/api/aws/refresh", body);
     },
     onSuccess: () => {
@@ -269,12 +269,21 @@ export default function AwsCheckerPage() {
         <div className="flex items-center gap-3">
           <Button 
             variant="outline"
-            onClick={() => refreshMutation.mutate(filteredAccounts.map(a => a.id))}
+            onClick={() => refreshMutation.mutate({ accountIds: filteredAccounts.map(a => a.id), lookbackDays: 7 })}
             disabled={refreshMutation.isPending}
             className="h-11 px-6 rounded-xl border-white/10 bg-white/5 text-white font-black text-xs uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2"
           >
             {refreshMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-            Sync All
+            Sync (7d)
+          </Button>
+          <Button 
+            variant="outline"
+            onClick={() => refreshMutation.mutate({ accountIds: filteredAccounts.map(a => a.id), lookbackDays: 30 })}
+            disabled={refreshMutation.isPending}
+            className="h-11 px-6 rounded-xl border-purple-500/30 bg-purple-500/10 text-purple-400 font-black text-xs uppercase tracking-widest hover:bg-purple-500/20 transition-all flex items-center gap-2"
+          >
+            {refreshMutation.isPending ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+            Deep Sync (30d)
           </Button>
           <AccountDialog 
             open={isCreateOpen || !!editingAccount} 
