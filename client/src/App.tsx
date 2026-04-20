@@ -7,7 +7,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 import { Loader2 } from "lucide-react";
 import { LayoutShell } from "@/components/layout-shell";
-import { ThemeProvider } from "@/components/theme-provider";
 import { AdminNotifier } from "@/components/admin-notifier";
 
 // Lazy load pages for code splitting
@@ -121,15 +120,13 @@ function Router() {
 
 function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="shopbot-theme">
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <AdminNotifier />
-          <Router />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <AdminNotifier />
+        <Router />
+      </TooltipProvider>
+    </QueryClientProvider>
   );
 }
 
