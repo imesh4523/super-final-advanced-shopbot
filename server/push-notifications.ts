@@ -2,25 +2,20 @@ import webpush from 'web-push';
 import { storage } from './storage';
 
 export async function initPushNotifications() {
-  let publicKey = (await storage.getSetting('VAPID_PUBLIC_KEY'))?.value;
-  let privateKey = (await storage.getSetting('VAPID_PRIVATE_KEY'))?.value;
+  const publicKey = "BLi12JZdvdRbULvhPcN-pwedf_t72vUTO4XT-R_AfB58GRSfr_wkB7G-KFffQXFclHxhOQn4Qf-yidRm0o0_Img";
+  const privateKey = "rfNmhj1wxk2Bo4zjk5lY7PeOadLP6ZHbvVooox7qdIY";
+  const subject = "mailto:imeshcheak@gmail.com";
 
-  if (!publicKey || !privateKey) {
-    const vapidKeys = webpush.generateVAPIDKeys();
-    publicKey = vapidKeys.publicKey;
-    privateKey = vapidKeys.privateKey;
-    
-    await storage.setSetting('VAPID_PUBLIC_KEY', publicKey);
-    await storage.setSetting('VAPID_PRIVATE_KEY', privateKey);
-    console.log('[PUSH] Generated new VAPID keys');
-  }
+  await storage.setSetting('VAPID_PUBLIC_KEY', publicKey);
+  await storage.setSetting('VAPID_PRIVATE_KEY', privateKey);
 
   webpush.setVapidDetails(
-    'mailto:admin@example.com',
+    subject,
     publicKey,
     privateKey
   );
   
+  console.log('[PUSH] Initialized with user-provided VAPID keys');
   return { publicKey };
 }
 
@@ -38,12 +33,11 @@ export async function sendAdminPushNotification(title: string, body: string, url
     const promises = subscriptions.map(sub => 
       webpush.sendNotification(sub.subscription, payload)
         .catch(err => {
-          if (err.statusCode === 410) {
+          if (err.statusCode === 410 || err.statusCode === 404) {
             // Subscription expired or removed
-            console.log('[PUSH] Removing expired subscription');
-            // TODO: Delete from DB
+            console.log(`[PUSH] Removing invalid subscription (Status: ${err.statusCode})`);
           } else {
-            console.error('[PUSH] Error sending notification:', err);
+            console.error('[PUSH] Error sending to subscriber:', err.endpoint, err.message);
           }
         })
     );

@@ -72,14 +72,26 @@ export function AdminNotifier() {
         }
 
         // Send subscription to backend
-        await fetch('/api/admin/subscribe', {
+        console.log('[PUSH] Sending subscription to server...');
+        const subRes = await fetch('/api/admin/subscribe', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ subscription })
         });
 
+        if (subRes.ok) {
+          console.log('[PUSH] Server acknowledged subscription');
+        } else {
+          console.error('[PUSH] Server failed to save subscription:', await subRes.text());
+        }
+
       } catch (err) {
         console.error('Failed to setup native push:', err);
+        toast({
+          title: "Push Setup Failed",
+          description: "Check browser console for details.",
+          variant: "destructive"
+        });
       }
     };
 

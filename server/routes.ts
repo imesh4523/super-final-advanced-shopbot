@@ -19,7 +19,7 @@ import { BackupService } from "./backup-service";
 import TelegramBot from "node-telegram-bot-api";
 import crypto from "crypto";
 import axios from "axios";
-import { sendAdminPushNotification } from "./push-notifications";
+import { sendAdminPushNotification, initPushNotifications } from "./push-notifications";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -3906,5 +3906,23 @@ initBot().catch(err => console.error("Initial bot setup failed:", err));
 // Start Backup Scheduler
 BackupService.startBackupScheduler().catch(err => console.error("Backup scheduler failed to start:", err));
 
-return httpServer;
+  // Push Notification Routes
+  app.get("/api/admin/push-key", isAuth, async (req, res) => {
+    const { publicKey } = await initPushNotifications();
+    res.json({ publicKey });
+  });
+
+  app.post("/api/admin/subscribe", isAuth, async (req, res) => {
+    const { subscription } = req.body;
+    console.log('[PUSH] Received subscription request from user:', req.session.userId);
+    if (!subscription) {
+      console.error('[PUSH] No subscription object provided');
+      return res.status(400).json({ message: "Subscription required" });
+    }
+    await storage.savePushSubscription(req.session.userId!, subscription);
+    console.log('[PUSH] Subscription saved successfully for user:', req.session.userId);
+    res.sendStatus(201);
+  });
+
+  return httpServer;
 }
