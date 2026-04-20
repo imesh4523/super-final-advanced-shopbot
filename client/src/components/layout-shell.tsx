@@ -96,9 +96,10 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen relative overflow-hidden">
       {/* Dynamic Animated Orbs (Image 2 Style) */}
-      <div className="orb w-[600px] h-[600px] bg-purple-600/20 -top-40 -left-40 animate-pulse" />
+      {/* Removed background orbs to eliminate glows */}
+      {/* <div className="orb w-[600px] h-[600px] bg-purple-600/20 -top-40 -left-40 animate-pulse" />
       <div className="orb w-[500px] h-[500px] bg-blue-600/10 bottom-20 right-20" />
-      <div className="orb w-[300px] h-[300px] bg-indigo-500/15 top-1/2 left-1/3" />
+      <div className="orb w-[300px] h-[300px] bg-indigo-500/15 top-1/2 left-1/3" /> */}
 
       {/* Mobile Sidebar */}
       <Sheet open={isMobileOpen} onOpenChange={setIsMobileOpen}>

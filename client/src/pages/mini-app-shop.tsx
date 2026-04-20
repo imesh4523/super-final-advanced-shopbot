@@ -481,7 +481,7 @@ export default function MiniAppShop() {
                 <h2 className="text-3xl font-black tracking-tighter leading-none mb-2">Instant<br/>Deployment</h2>
                 <p className="text-purple-100/80 text-[11px] font-medium max-w-[200px] leading-relaxed">High-tier verified accounts for AWS, DigitalOcean & more.</p>
               </div>
-              <div className="absolute top-0 right-0 w-40 h-40 bg-blue-400/20 blur-3xl rounded-full translate-x-12 -translate-y-12 animate-pulse" />
+              {/* Removed blue glow blur */}
               <Zap className="absolute bottom-6 right-8 w-12 h-12 text-white/10" />
             </motion.section>
           )}
@@ -526,7 +526,7 @@ export default function MiniAppShop() {
                     </p>
                   )}
                 </div>
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 blur-3xl rounded-full translate-x-12 -translate-y-12 animate-pulse" />
+                {/* Removed white glow blur */}
                 <StoreIcon className="absolute bottom-6 right-8 w-12 h-12 text-white/10" />
               </motion.section>
             )
@@ -826,7 +826,7 @@ export default function MiniAppShop() {
         </div>
         
         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-600 to-blue-500" />
-        <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-purple-50 rounded-full blur-3xl opacity-50" />
+        {/* Removed profile tab glow blur */}
       </div>
 
       <div className="bg-amber-50 p-6 rounded-[2rem] border border-amber-100/50 flex items-start gap-4">
