@@ -204,7 +204,7 @@ function LiveTOTP({ secret, onCopy }: { secret: string, onCopy: (text: string) =
   }, [secret]);
 
   return (
-    <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-4 rounded-2xl text-white shadow-lg shadow-purple-100 relative overflow-hidden group mb-4">
+    <div className="bg-gradient-to-br from-purple-600 to-indigo-700 p-4 rounded-2xl text-white shadow-lg relative overflow-hidden group mb-4">
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 blur-2xl rounded-full translate-x-8 -translate-y-8" />
       <div className="relative z-10 flex items-center justify-between">
         <div className="space-y-0.5">
@@ -582,7 +582,7 @@ export default function MiniAppShop() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl whitespace-nowrap text-[11px] font-black uppercase tracking-widest transition-all ${
                 selectedCategory === cat.id 
-                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-200' 
+                  ? 'bg-purple-600 text-white shadow-lg' 
                   : 'bg-white dark:bg-card text-neutral-400 border border-purple-50/50 dark:border-white/5'
               }`}
             >
@@ -687,7 +687,7 @@ export default function MiniAppShop() {
                     </span>
                   </div>
                 </div>
-                <Badge className="bg-green-500 text-white border-0 rounded-full text-[9px] font-black uppercase tracking-widest px-3 py-1 shadow-lg shadow-green-100">
+                <Badge className="bg-green-500 text-white border-0 rounded-full text-[9px] font-black uppercase tracking-widest px-3 py-1 shadow-lg">
                   Delivered
                 </Badge>
               </div>
@@ -780,7 +780,7 @@ export default function MiniAppShop() {
         <p className="text-neutral-400 text-xs font-bold uppercase tracking-widest">Account & Settings</p>
       </div>
 
-      <div className="bg-white rounded-[3rem] p-10 border border-purple-50 shadow-2xl shadow-purple-200 relative overflow-hidden">
+      <div className="bg-white rounded-[3rem] p-10 border border-purple-50 shadow-2xl relative overflow-hidden">
         <div className="relative z-10 flex flex-col items-center text-center space-y-6">
           <div className="relative">
             <div className="w-24 h-24 rounded-[30%] bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center text-white shadow-xl rotate-12 group hover:rotate-0 transition-transform duration-500 overflow-hidden">
@@ -854,17 +854,17 @@ export default function MiniAppShop() {
             <motion.div 
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 1, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute top-0 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-purple-600 shadow-lg shadow-purple-200" 
+              className="absolute top-0 left-1/2 -ml-2.5 w-5 h-5 rounded-full bg-purple-600 shadow-lg" 
             />
             <motion.div 
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-              className="absolute bottom-0 left-0 w-5 h-5 rounded-full bg-blue-600 shadow-lg shadow-blue-200" 
+              className="absolute bottom-0 left-0 w-5 h-5 rounded-full bg-blue-600 shadow-lg" 
             />
             <motion.div 
               animate={{ scale: [1, 1.3, 1] }}
               transition={{ duration: 1, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-pink-600 shadow-lg shadow-pink-200" 
+              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-pink-600 shadow-lg" 
             />
           </motion.div>
         </div>
@@ -889,7 +889,7 @@ export default function MiniAppShop() {
           <div className="flex items-center gap-3.5">
             <motion.div 
               whileHover={{ rotate: 10 }}
-              className="w-11 h-11 rounded-2xl bg-neutral-900 flex items-center justify-center shadow-lg shadow-neutral-200 transition-all overflow-hidden"
+              className="w-11 h-11 rounded-2xl bg-neutral-900 flex items-center justify-center shadow-lg transition-all overflow-hidden"
             >
               <UserAvatar fallback={UserIcon} className="w-full h-full" />
             </motion.div>
@@ -1030,7 +1030,7 @@ export default function MiniAppShop() {
               Cancel
             </Button>
             <Button 
-              className="flex-1 h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black uppercase tracking-widest shadow-xl shadow-purple-100 disabled:opacity-50"
+              className="flex-1 h-14 rounded-2xl bg-purple-600 hover:bg-purple-700 text-white font-black uppercase tracking-widest shadow-xl disabled:opacity-50"
               disabled={purchaseMutation.isPending || !selectedProduct || (selectedProduct.stockCount || 0) < purchaseQuantity}
               onClick={() => {
                 if (selectedProduct) {
@@ -1116,7 +1116,7 @@ export default function MiniAppShop() {
               initial={{ scale: 0.5, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="w-32 h-32 rounded-[2.5rem] bg-green-500 text-white flex items-center justify-center shadow-3xl shadow-green-200 mb-8"
+              className="w-32 h-32 rounded-[2.5rem] bg-green-500 text-white flex items-center justify-center shadow-3xl mb-8"
             >
               <CheckCircle2 className="w-16 h-16" />
             </motion.div>
