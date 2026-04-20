@@ -3,7 +3,7 @@ import { io } from 'socket.io-client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/use-auth';
 
-const NOTIFICATION_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';
+const NOTIFICATION_SOUND_URL = 'https://github.com/shubham-sawant/shopify-chaching-sound/raw/master/shopify-chaching.mp3';
 
 // Utility to convert VAPID public key to Uint8Array
 function urlBase64ToUint8Array(base64String: string) {
