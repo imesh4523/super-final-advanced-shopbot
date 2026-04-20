@@ -92,7 +92,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden dark bg-background">
       {/* Dynamic Animated Orbs (Image 2 Style) */}
       {/* Removed background orbs to eliminate glows */}
       {/* <div className="orb w-[600px] h-[600px] bg-purple-600/20 -top-40 -left-40 animate-pulse" />
@@ -125,10 +125,6 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           <NavContent />
         </div>
         <div className="mt-auto p-8 border-t border-white/5 bg-white/[0.01] space-y-6">
-          <div className="flex items-center justify-between px-2">
-            <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Display Theme</span>
-            <ThemeToggle />
-          </div>
           <div className="relative py-4 group/watermark">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover/watermark:opacity-100 transition-opacity duration-700" />
             <div className="relative text-[10px] text-white/20 font-black uppercase tracking-[0.3em] text-center transition-all duration-500 group-hover/watermark:text-purple-400 group-hover/watermark:scale-110 group-hover/watermark:tracking-[0.4em] drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
