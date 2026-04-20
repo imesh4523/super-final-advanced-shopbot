@@ -771,6 +771,7 @@ export default function SettingsPage() {
             </div>
           </CardContent>
         </Card>
+      </div>
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
