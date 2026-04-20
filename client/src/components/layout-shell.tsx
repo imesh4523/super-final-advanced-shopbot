@@ -60,10 +60,10 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col h-full overflow-hidden">
       <div className="flex shrink-0 h-24 flex-none items-center px-8">
         <div className="flex items-center gap-4 font-black text-3xl text-white tracking-tighter">
-          <div className="w-12 h-12 rounded-[1.25rem] bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white shadow-[0_0_30px_rgba(168,85,247,0.4)]">
-            <Package className="w-7 h-7" />
+          <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group-hover:scale-110 transition-transform duration-500">
+            <img src="/logo.png" className="w-full h-full object-cover" />
           </div>
-          CloudShop
+          Market Hub
         </div>
       </div>
       <div className="flex-1 overflow-y-auto pb-6">
