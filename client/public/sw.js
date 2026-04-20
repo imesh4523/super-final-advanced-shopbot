@@ -5,8 +5,11 @@ self.addEventListener('push', (event) => {
     const data = event.data.json();
     const options = {
       body: data.body,
-      icon: '/favicon.ico',
-      badge: '/favicon.ico',
+      icon: '/logo.png',
+      badge: '/logo.png',
+      vibrate: [200, 100, 200, 100, 200],
+      tag: 'admin-alert',
+      renotify: true,
       data: {
         url: data.url || '/'
       }
