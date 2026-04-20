@@ -472,7 +472,7 @@ export default function MiniAppShop() {
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               onDragEnd={(e, info) => handleDragEnd(e, info, 0)}
-              className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 p-8 text-white shadow-2xl cursor-grab active:cursor-grabbing"
+              className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 p-8 text-white cursor-grab active:cursor-grabbing"
             >
               <div className="relative z-10">
                 <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-3 py-1 mb-4 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
@@ -497,7 +497,7 @@ export default function MiniAppShop() {
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 onDragEnd={(e, info) => handleDragEnd(e, info, idx + 1)}
-                className={`relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br ${offerGradients[idx % offerGradients.length]} p-8 text-white shadow-2xl cursor-grab active:cursor-grabbing`}
+                className={`relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br ${offerGradients[idx % offerGradients.length]} p-8 text-white cursor-grab active:cursor-grabbing`}
               >
                 <div className="relative z-10">
                   <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-3 py-1 mb-4 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
@@ -582,7 +582,7 @@ export default function MiniAppShop() {
               onClick={() => setSelectedCategory(cat.id)}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl whitespace-nowrap text-[11px] font-black uppercase tracking-widest transition-all ${
                 selectedCategory === cat.id 
-                  ? 'bg-purple-600 text-white shadow-lg' 
+                  ? 'bg-purple-600 text-white' 
                   : 'bg-white dark:bg-card text-neutral-400 border border-purple-50/50 dark:border-white/5'
               }`}
             >
@@ -780,7 +780,7 @@ export default function MiniAppShop() {
         <p className="text-neutral-400 text-xs font-bold uppercase tracking-widest">Account & Settings</p>
       </div>
 
-      <div className="bg-white rounded-[3rem] p-10 border border-purple-50 shadow-2xl relative overflow-hidden">
+      <div className="bg-white rounded-[3rem] p-10 border border-purple-50 relative overflow-hidden">
         <div className="relative z-10 flex flex-col items-center text-center space-y-6">
           <div className="relative">
             <div className="w-24 h-24 rounded-[30%] bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center text-white shadow-xl rotate-12 group hover:rotate-0 transition-transform duration-500 overflow-hidden">
@@ -1116,7 +1116,7 @@ export default function MiniAppShop() {
               initial={{ scale: 0.5, rotate: -45 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="w-32 h-32 rounded-[2.5rem] bg-green-500 text-white flex items-center justify-center shadow-3xl mb-8"
+              className="w-32 h-32 rounded-[2.5rem] bg-green-500 text-white flex items-center justify-center mb-8"
             >
               <CheckCircle2 className="w-16 h-16" />
             </motion.div>
