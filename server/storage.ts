@@ -157,6 +157,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async initializeAdmin(): Promise<void> {
+    // Create push_subscriptions table if not exists
+    try {
+      await db.execute(sql`
+        CREATE TABLE IF NOT EXISTS push_subscriptions (
+          id SERIAL PRIMARY KEY,
+          user_id INTEGER NOT NULL REFERENCES users(id),
+          subscription JSONB NOT NULL,
+          created_at TIMESTAMP DEFAULT NOW()
+        );
+      `);
+      console.log('[DB] push_subscriptions table verified/created');
+    } catch (err) {
+      console.error('[DB] Failed to create push_subscriptions table:', err);
+    }
+
     const email = process.env.ADMIN_EMAIL;
     const password = process.env.ADMIN_PASSWORD;
     if (email && password) {
