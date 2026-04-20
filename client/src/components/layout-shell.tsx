@@ -33,6 +33,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ProfileButton } from "./profile-button";
 import { AdminNotifier } from "./admin-notifier";
+import { ThemeToggle } from "./theme-toggle";
 
 export function LayoutShell({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
@@ -123,7 +124,11 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
         <div className="flex-1 overflow-hidden min-h-0">
           <NavContent />
         </div>
-        <div className="mt-auto p-8 border-t border-white/5 bg-white/[0.01] space-y-4">
+        <div className="mt-auto p-8 border-t border-white/5 bg-white/[0.01] space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Display Theme</span>
+            <ThemeToggle />
+          </div>
           <div className="relative py-4 group/watermark">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover/watermark:opacity-100 transition-opacity duration-700" />
             <div className="relative text-[10px] text-white/20 font-black uppercase tracking-[0.3em] text-center transition-all duration-500 group-hover/watermark:text-purple-400 group-hover/watermark:scale-110 group-hover/watermark:tracking-[0.4em] drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">
