@@ -3924,5 +3924,15 @@ BackupService.startBackupScheduler().catch(err => console.error("Backup schedule
     res.sendStatus(201);
   });
 
+  app.post("/api/admin/test-push", isAuth, async (req, res) => {
+    console.log('[PUSH] Manual test trigger by user:', req.session.userId);
+    await sendAdminPushNotification(
+      'Test Alert',
+      'This is a test notification from Market Hub!',
+      '/settings'
+    );
+    res.json({ success: true });
+  });
+
   return httpServer;
 }

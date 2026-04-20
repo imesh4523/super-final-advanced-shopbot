@@ -652,6 +652,35 @@ export default function SettingsPage() {
                 {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' ? "Active" : "Enable Now"}
               </Button>
             </div>
+
+            {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' && (
+              <div className="pt-4 border-t border-white/5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full glass-panel border-blue-500/30 text-blue-400 hover:bg-blue-500/10 h-10 font-bold"
+                  onClick={async () => {
+                    try {
+                      const res = await apiRequest("POST", "/api/admin/test-push", {});
+                      if (res.ok) {
+                        toast({
+                          title: "Test Sent",
+                          description: "Check your notification bar!",
+                        });
+                      }
+                    } catch (err) {
+                      toast({
+                        title: "Failed to send test",
+                        description: "Check server logs.",
+                        variant: "destructive"
+                      });
+                    }
+                  }}
+                >
+                  Send Test Notification
+                </Button>
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
