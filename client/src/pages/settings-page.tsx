@@ -25,6 +25,10 @@ export default function SettingsPage() {
   const [faqText, setFaqText] = useState("");
   const [howToBuyVideo, setHowToBuyVideo] = useState("");
   const [howToDepositVideo, setHowToDepositVideo] = useState("");
+  const [storeName, setStoreName] = useState("");
+  const [supportUsername, setSupportUsername] = useState("");
+  const [supportBtnText, setSupportBtnText] = useState("");
+  const [loadingText, setLoadingText] = useState("");
 
   const { data: setting, isLoading: isTokenLoading } = useQuery<{ key: string, value: string }>({
     queryKey: ["/api/settings/TELEGRAM_BOT_TOKEN"],
@@ -102,12 +106,29 @@ export default function SettingsPage() {
     queryKey: ["/api/settings/SPECIAL_OFFERS_ENABLED"],
   });
 
+  const { data: storeNameSetting, isLoading: isStoreNameLoading } = useQuery<{ key: string, value: string }>({
+    queryKey: ["/api/settings/STORE_NAME"],
+  });
+
+  const { data: supportUsernameSetting, isLoading: isSupportUsernameLoading } = useQuery<{ key: string, value: string }>({
+    queryKey: ["/api/settings/SUPPORT_USERNAME"],
+  });
+
+  const { data: supportBtnTextSetting, isLoading: isSupportBtnTextLoading } = useQuery<{ key: string, value: string }>({
+    queryKey: ["/api/settings/SUPPORT_BTN_TEXT"],
+  });
+
+  const { data: loadingTextSetting, isLoading: isLoadingTextLoading } = useQuery<{ key: string, value: string }>({
+    queryKey: ["/api/settings/LOADING_TEXT"],
+  });
+
   const isLoading = isTokenLoading || isBroadcastLoading || isSupportLoading || isCryptomusLoading || 
     isMerchantLoading || isBinanceLoading || isBinanceApiLoading || isBinanceSecretLoading || 
     isBybitLoading || isBybitApiLoading || isBybitSecretLoading || isFaqLoading || 
     isHowToBuyLoading || isHowToDepositLoading || isBinanceEnabledLoading || 
     isBybitEnabledLoading || isCryptomusEnabledLoading || isAutomationEnabledLoading ||
-    isSpecialOffersEnabledLoading;
+    isSpecialOffersEnabledLoading || isStoreNameLoading || isSupportUsernameLoading || 
+    isSupportBtnTextLoading || isLoadingTextLoading;
 
   const [binanceEnabled, setBinanceEnabled] = useState(true);
   const [bybitEnabled, setBybitEnabled] = useState(true);
@@ -190,6 +211,22 @@ export default function SettingsPage() {
   useEffect(() => {
     if (howToDepositSetting?.value !== undefined) setHowToDepositVideo(howToDepositSetting.value);
   }, [howToDepositSetting]);
+
+  useEffect(() => {
+    if (storeNameSetting?.value !== undefined) setStoreName(storeNameSetting.value);
+  }, [storeNameSetting]);
+
+  useEffect(() => {
+    if (supportUsernameSetting?.value !== undefined) setSupportUsername(supportUsernameSetting.value);
+  }, [supportUsernameSetting]);
+
+  useEffect(() => {
+    if (supportBtnTextSetting?.value !== undefined) setSupportBtnText(supportBtnTextSetting.value);
+  }, [supportBtnTextSetting]);
+
+  useEffect(() => {
+    if (loadingTextSetting?.value !== undefined) setLoadingText(loadingTextSetting.value);
+  }, [loadingTextSetting]);
 
   const mutation = useMutation({
     mutationFn: async (value: string) => {
@@ -429,6 +466,20 @@ export default function SettingsPage() {
     }
   });
 
+  const brandingMutation = useMutation({
+    mutationFn: async ({ key, value }: { key: string, value: string }) => {
+      const res = await apiRequest("POST", "/api/settings", { key, value });
+      return res.json();
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: [`/api/settings/${variables.key}`] });
+      toast({
+        title: "Branding Updated",
+        description: `${variables.key.replace("_", " ").toLowerCase()} has been updated.`,
+      });
+    }
+  });
+
   const togglePaymentMutation = useMutation({
     mutationFn: async ({ key, value }: { key: string, value: string }) => {
       const res = await apiRequest("POST", "/api/settings", { key, value });
@@ -621,6 +672,106 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
       </div>
+
+      <div className="max-w-2xl">
+        <Card className="glass-card border-0">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-purple-400" />
+              Branding & Customization
+            </CardTitle>
+            <CardDescription className="text-white/60">
+              Personalize your store and support contact information.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">Store Name</Label>
+              <div className="flex gap-3">
+                <Input
+                  placeholder="e.g. Shopeefy Cloud Store"
+                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  value={storeName}
+                  onChange={(e) => setStoreName(e.target.value)}
+                />
+                <Button 
+                  onClick={() => brandingMutation.mutate({ key: "STORE_NAME", value: storeName })}
+                  disabled={brandingMutation.isPending}
+                  className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
+                >
+                  {brandingMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-4 border-t border-white/5">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">Support Username (Link)</Label>
+              <div className="flex gap-3">
+                <Input
+                  placeholder="e.g. @rochana_imesh"
+                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  value={supportUsername}
+                  onChange={(e) => setSupportUsername(e.target.value)}
+                />
+                <Button 
+                  onClick={() => brandingMutation.mutate({ key: "SUPPORT_USERNAME", value: supportUsername })}
+                  disabled={brandingMutation.isPending}
+                  className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
+                >
+                  {brandingMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-4 border-t border-white/5">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">Support Button Text</Label>
+              <div className="flex gap-3">
+                <Input
+                  placeholder="e.g. Write to Support"
+                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  value={supportBtnText}
+                  onChange={(e) => setSupportBtnText(e.target.value)}
+                />
+                <Button 
+                  onClick={() => brandingMutation.mutate({ key: "SUPPORT_BTN_TEXT", value: supportBtnText })}
+                  disabled={brandingMutation.isPending}
+                  className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
+                >
+                  {brandingMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="space-y-2 pt-4 border-t border-white/5">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">Loading Animation Text</Label>
+              <div className="flex gap-3">
+                <Input
+                  placeholder="e.g. Shopeefy..."
+                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  value={loadingText}
+                  onChange={(e) => setLoadingText(e.target.value)}
+                />
+                <Button 
+                  onClick={() => brandingMutation.mutate({ key: "LOADING_TEXT", value: loadingText })}
+                  disabled={brandingMutation.isPending}
+                  className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
+                >
+                  {brandingMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                </Button>
+              </div>
+            </div>
+
+            <div className="mt-6 p-4 rounded-xl bg-purple-500/5 border border-purple-500/10">
+              <div className="flex items-center gap-3">
+                <Lock className="w-4 h-4 text-purple-400" />
+                <p className="text-[10px] text-white/40 uppercase tracking-widest font-black">
+                  Developer Credits: <span className="text-purple-400">Rochana Imesh</span> (Immutable)
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
           <CardHeader>

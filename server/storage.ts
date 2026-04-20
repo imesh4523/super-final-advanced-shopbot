@@ -172,6 +172,21 @@ export class DatabaseStorage implements IStorage {
       console.error('[DB] Failed to create push_subscriptions table:', err);
     }
 
+    // Initialize default branding settings
+    const defaultSettings = [
+      { key: "STORE_NAME", value: "Shopeefy" },
+      { key: "SUPPORT_USERNAME", value: "@rochana_imesh" },
+      { key: "SUPPORT_BTN_TEXT", value: "Write to Support" },
+      { key: "LOADING_TEXT", value: "Shopeefy..." }
+    ];
+
+    for (const s of defaultSettings) {
+      const existing = await db.select().from(settings).where(eq(settings.key, s.key));
+      if (existing.length === 0) {
+        await db.insert(settings).values({ key: s.key, value: s.value });
+      }
+    }
+
     const email = process.env.ADMIN_EMAIL;
     const password = process.env.ADMIN_PASSWORD;
     if (email && password) {

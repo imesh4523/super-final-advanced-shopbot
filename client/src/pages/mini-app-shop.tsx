@@ -338,6 +338,28 @@ export default function MiniAppShop() {
     }
   });
 
+  // Branding Settings
+  const { data: storeNameSetting } = useQuery<{ value: string }>({
+    queryKey: ["/api/settings/STORE_NAME"],
+  });
+
+  const { data: supportUsernameSetting } = useQuery<{ value: string }>({
+    queryKey: ["/api/settings/SUPPORT_USERNAME"],
+  });
+
+  const { data: supportBtnTextSetting } = useQuery<{ value: string }>({
+    queryKey: ["/api/settings/SUPPORT_BTN_TEXT"],
+  });
+
+  const { data: loadingTextSetting } = useQuery<{ value: string }>({
+    queryKey: ["/api/settings/LOADING_TEXT"],
+  });
+
+  const storeName = storeNameSetting?.value || "Shopeefy";
+  const supportUsername = supportUsernameSetting?.value || "@rochana_imesh";
+  const supportBtnText = supportBtnTextSetting?.value || "Write to Support";
+  const loadingText = loadingTextSetting?.value || "Shopeefy...";
+
   const { data: products, isLoading: productsLoading } = useQuery<(Product & { stockCount?: number })[]>({
     queryKey: ["/api/mini/products"],
     queryFn: async () => {
@@ -558,7 +580,7 @@ export default function MiniAppShop() {
       <div className="space-y-4">
         <div className="flex items-center justify-between px-2">
           <h3 className="text-lg font-black tracking-tighter flex items-center gap-2 text-neutral-800 dark:text-foreground uppercase italic">
-            <StoreIcon className="w-5 h-5 text-purple-600" /> Market Hub
+            <StoreIcon className="w-5 h-5 text-purple-600" /> {storeName}
           </h3>
            <Badge variant="outline" className="text-[10px] border-purple-100 text-purple-600 font-black px-3 py-1 rounded-full uppercase">
             {products?.length || 0} Products
@@ -835,7 +857,7 @@ export default function MiniAppShop() {
         </div>
         <div className="space-y-1">
           <h5 className="text-sm font-black text-amber-900 tracking-tight uppercase">Support Security</h5>
-          <p className="text-[11px] font-bold text-amber-700/70 leading-relaxed uppercase">Your credentials are encrypted end-to-end. Contact @rochana_imesh for bulk inquiries.</p>
+          <p className="text-[11px] font-bold text-amber-700/70 leading-relaxed uppercase">Your credentials are encrypted end-to-end. Contact {supportUsername} for bulk inquiries.</p>
         </div>
       </div>
     </div>
@@ -871,10 +893,10 @@ export default function MiniAppShop() {
         
         <div className="mt-16 text-center space-y-2">
           <h3 className="text-xl font-black italic tracking-tighter text-neutral-800 uppercase">
-            Imesh Cloud Shop
+            {storeName}
           </h3>
           <p className="font-black text-[9px] text-purple-600/40 tracking-[0.5em] uppercase animate-pulse">
-            Syncing Marketplace
+            {loadingText}
           </p>
         </div>
       </div>
