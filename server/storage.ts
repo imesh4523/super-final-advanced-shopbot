@@ -39,7 +39,8 @@ import {
   type BackupConfig,
   type InsertBackupConfig,
   type BackupLog,
-  type InsertBackupLog
+  type InsertBackupLog,
+  pushSubscriptions
 } from "@shared/schema";
 import { eq, desc, count, sql, and, or, gt, gte, lte, isNull, isNotNull } from "drizzle-orm";
 
@@ -132,6 +133,10 @@ export interface IStorage {
   getBackupLogs(limit?: number): Promise<BackupLog[]>;
   createBackupLog(log: InsertBackupLog): Promise<BackupLog>;
   clearOldBackupLogs(days: number): Promise<void>;
+  
+  // Push Subscriptions
+  savePushSubscription(userId: number, subscription: any): Promise<void>;
+  getPushSubscriptions(userId?: number): Promise<any[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -637,6 +642,30 @@ export class DatabaseStorage implements IStorage {
   async clearOldBackupLogs(days: number): Promise<void> {
     const cutoff = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
     await db.delete(backupLogs).where(sql`${backupLogs.createdAt} < ${cutoff}`);
+  }
+
+  // Push Subscriptions
+  async savePushSubscription(userId: number, subscription: any): Promise<void> {
+    const [existing] = await db
+      .select()
+      .from(pushSubscriptions)
+      .where(and(eq(pushSubscriptions.userId, userId), sql`${pushSubscriptions.subscription}->>'endpoint' = ${subscription.endpoint}`))
+      .limit(1);
+
+    if (!existing) {
+      await db.insert(pushSubscriptions).values({
+        userId,
+        subscription,
+      });
+    }
+  }
+
+  async getPushSubscriptions(userId?: number): Promise<any[]> {
+    const query = db.select().from(pushSubscriptions);
+    if (userId) {
+      query.where(eq(pushSubscriptions.userId, userId));
+    }
+    return await query;
   }
 }
 

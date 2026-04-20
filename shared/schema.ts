@@ -163,6 +163,24 @@ export const insertBroadcastMessageSchema = createInsertSchema(broadcastMessages
 export type BroadcastMessage = typeof broadcastMessages.$inferSelect;
 export type InsertBroadcastMessage = z.infer<typeof insertBroadcastMessageSchema>;
 
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull().references(() => users.id),
+  subscription: jsonb("subscription").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const pushSubscriptionsRelations = relations(pushSubscriptions, ({ one }) => ({
+  user: one(users, {
+    fields: [pushSubscriptions.userId],
+    references: [users.id],
+  }),
+}));
+
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).omit({ id: true, createdAt: true });
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
+
 // AWS Checker Entities
 export const awsAccounts = pgTable("aws_accounts", {
   id: serial("id").primaryKey(),

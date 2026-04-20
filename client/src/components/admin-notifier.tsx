@@ -5,52 +5,83 @@ import { useAuth } from '@/hooks/use-auth';
 
 const NOTIFICATION_SOUND_URL = 'https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3';
 
+// Utility to convert VAPID public key to Uint8Array
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
+}
+
 export function AdminNotifier() {
   const { toast } = useToast();
   const { user } = useAuth();
 
   useEffect(() => {
-    // Only run for authenticated admin users
     if (!user) return;
 
-    // Request browser notification permission
-    if (Notification.permission === 'default') {
-      Notification.requestPermission();
-    }
-
+    // 1. Socket.io for Real-time Toast/Sound when dashboard is open
     const socket = io();
-
-    socket.on('connect', () => {
-      console.log('Connected to notification socket');
-    });
-
-    socket.on('admin_notification', (notification: { type: string; title: string; message: string; data: any }) => {
-      console.log('New admin notification:', notification);
-
-      // 1. Show Toast
+    socket.on('admin_notification', (notification: { title: string; message: string }) => {
       toast({
         title: notification.title,
         description: notification.message,
         duration: 10000,
       });
 
-      // 2. Play Sound
       const audio = new Audio(NOTIFICATION_SOUND_URL);
-      audio.play().catch(err => console.error('Failed to play notification sound:', err));
-
-      // 3. Show Browser Push Notification
-      if (Notification.permission === 'granted') {
-        new Notification(notification.title, {
-          body: notification.message,
-          icon: '/favicon.ico', // Fallback to favicon
-        });
-      }
+      audio.play().catch(() => {});
     });
+
+    // 2. Native Web Push (VAPID) for background notifications
+    const setupNativePush = async () => {
+      if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+        console.warn('Push notifications not supported by browser');
+        return;
+      }
+
+      try {
+        // Register Service Worker
+        const registration = await navigator.serviceWorker.register('/sw.js');
+        console.log('Service Worker registered');
+
+        // Get Public VAPID Key
+        const res = await fetch('/api/admin/push-key');
+        const { publicKey } = await res.json();
+        if (!publicKey) return;
+
+        // Subscribe to Push
+        let subscription = await registration.pushManager.getSubscription();
+        if (!subscription) {
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(publicKey)
+          });
+          console.log('User subscribed to push');
+        }
+
+        // Send subscription to backend
+        await fetch('/api/admin/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ subscription })
+        });
+
+      } catch (err) {
+        console.error('Failed to setup native push:', err);
+      }
+    };
+
+    setupNativePush();
 
     return () => {
       socket.disconnect();
     };
   }, [user, toast]);
 
-  return null; // This component doesn't render anything
+  return null;
 }

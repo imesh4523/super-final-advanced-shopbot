@@ -19,6 +19,7 @@ import { BackupService } from "./backup-service";
 import TelegramBot from "node-telegram-bot-api";
 import crypto from "crypto";
 import axios from "axios";
+import { sendAdminPushNotification } from "./push-notifications";
 import bcrypt from "bcryptjs";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
@@ -171,6 +172,26 @@ export async function registerRoutes(
       });
     }
     res.json(user);
+  });
+
+  // Push Notification Routes
+  app.get("/api/admin/push-key", isAuth, async (req, res) => {
+    const setting = await storage.getSetting("VAPID_PUBLIC_KEY");
+    res.json({ publicKey: setting?.value });
+  });
+
+  app.post("/api/admin/subscribe", isAuth, async (req, res) => {
+    try {
+      const { subscription } = req.body;
+      if (req.session.userId) {
+        await storage.savePushSubscription(req.session.userId, subscription);
+        res.json({ success: true });
+      } else {
+        res.status(401).send();
+      }
+    } catch (err) {
+      res.status(400).json({ message: "Invalid subscription" });
+    }
   });
 
   /**
@@ -439,6 +460,12 @@ export async function registerRoutes(
         data: result
       });
 
+      // Emit Native Push Notification
+      sendAdminPushNotification(
+        'New Purchase',
+        `${tgUser.first_name} bought ${result.quantity}x ${result.product.name} ($${((result.product.price * result.quantity) / 100).toFixed(2)})`
+      ).catch(console.error);
+
       res.json({
         success: true,
         message: "Purchase completed.",
@@ -534,6 +561,13 @@ export async function registerRoutes(
         message: `${tgUser.first_name} claimed bundle: ${result.offer.name} ($${(result.offer.price / 100).toFixed(2)})`,
         data: result
       });
+
+      // Emit Native Push Notification
+      sendAdminPushNotification(
+        'New Bundle Purchase',
+        `${tgUser.first_name} claimed bundle: ${result.offer.name} ($${(result.offer.price / 100).toFixed(2)})`
+      ).catch(console.error);
+
       res.json({ success: true, message: "Purchase successful", newBalance: result.newBalance / 100 });
     } catch (err: any) {
       res.status(400).json({ message: err.message });
@@ -2369,6 +2403,12 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
               message: `User ${userId} sent a proof for $${amount} via ${method}`,
               data: { userId, amount, method }
             });
+
+            // Emit Native Push Notification
+            sendAdminPushNotification(
+              'New Deposit Proof',
+              `User ${userId} sent a proof for $${amount} via ${method}`
+            ).catch(console.error);
           }
         }
         return;

@@ -81,6 +81,10 @@ async function startServer() {
     const { startAwsBackgroundSync } = await import("./aws-service");
     startAwsBackgroundSync();
 
+    // Init VAPID Push Notifications
+    const { initPushNotifications } = await import("./push-notifications");
+    await initPushNotifications();
+
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
       const message = err.message || "Internal Server Error";
