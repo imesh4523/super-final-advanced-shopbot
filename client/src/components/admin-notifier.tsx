@@ -88,7 +88,7 @@ export function AdminNotifier() {
     window.addEventListener('trigger-push-setup', handleTrigger);
 
     // Initial attempt (might fail if permission not granted yet)
-    if (Notification.permission === 'granted') {
+    if (window.Notification && window.Notification.permission === 'granted') {
       setupNativePush();
     }
 
