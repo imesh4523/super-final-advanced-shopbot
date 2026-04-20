@@ -267,6 +267,7 @@ export default function MiniAppShop() {
   const [purchaseSuccess, setPurchaseSuccess] = useState(false);
   const [purchaseQuantity, setPurchaseQuantity] = useState(1);
   const [selectedOffer, setSelectedOffer] = useState<SpecialOffer | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [activeTutorial, setActiveTutorial] = useState<"buy" | "deposit" | null>(null);
 
   // AI Support Chat States
@@ -471,7 +472,7 @@ export default function MiniAppShop() {
               drag="x"
               dragConstraints={{ left: 0, right: 0 }}
               onDragEnd={(e, info) => handleDragEnd(e, info, 0)}
-              className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 p-8 text-white shadow-2xl shadow-purple-200 cursor-grab active:cursor-grabbing"
+              className="relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-700 p-8 text-white shadow-2xl cursor-grab active:cursor-grabbing"
             >
               <div className="relative z-10">
                 <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-3 py-1 mb-4 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
@@ -496,7 +497,7 @@ export default function MiniAppShop() {
                 drag="x"
                 dragConstraints={{ left: 0, right: 0 }}
                 onDragEnd={(e, info) => handleDragEnd(e, info, idx + 1)}
-                className={`relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br ${offerGradients[idx % offerGradients.length]} p-8 text-white shadow-2xl ${offerShadows[idx % offerShadows.length]} cursor-grab active:cursor-grabbing`}
+                className={`relative rounded-[2.5rem] overflow-hidden bg-gradient-to-br ${offerGradients[idx % offerGradients.length]} p-8 text-white shadow-2xl cursor-grab active:cursor-grabbing`}
               >
                 <div className="relative z-10">
                   <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-3 py-1 mb-4 rounded-full text-[10px] font-bold uppercase tracking-widest backdrop-blur-md">
@@ -559,14 +560,47 @@ export default function MiniAppShop() {
           <h3 className="text-lg font-black tracking-tighter flex items-center gap-2 text-neutral-800 dark:text-foreground uppercase italic">
             <StoreIcon className="w-5 h-5 text-purple-600" /> Market Hub
           </h3>
-          <Badge variant="outline" className="text-[10px] border-purple-100 text-purple-600 font-black px-3 py-1 rounded-full uppercase">
+           <Badge variant="outline" className="text-[10px] border-purple-100 text-purple-600 font-black px-3 py-1 rounded-full uppercase">
             {products?.length || 0} Products
           </Badge>
         </div>
 
+        {/* Category Filter Chips */}
+        <div className="flex items-center gap-3 overflow-x-auto pb-2 px-1 scrollbar-hide no-scrollbar">
+          {[
+            { id: 'all', label: 'All', icon: <Package className="w-4 h-4" /> },
+            { id: 'aws', label: 'AWS', icon: <SiAmazon className="w-4 h-4" /> },
+            { id: 'digitalocean', label: 'DO', icon: <SiDigitalocean className="w-4 h-4" /> },
+            { id: 'azure', label: 'Azure', icon: <VscAzure className="w-4 h-4" /> },
+            { id: 'google', label: 'GCP', icon: <SiGooglecloud className="w-4 h-4" /> },
+            { id: 'vultr', label: 'Vultr', icon: <SiVultr className="w-4 h-4" /> },
+            { id: 'hetzner', label: 'Hetzner', icon: <SiHetzner className="w-4 h-4" /> },
+            { id: 'oracle', label: 'Oracle', icon: <SiOracle className="w-4 h-4" /> },
+          ].map((cat) => (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl whitespace-nowrap text-[11px] font-black uppercase tracking-widest transition-all ${
+                selectedCategory === cat.id 
+                  ? 'bg-purple-600 text-white shadow-lg shadow-purple-200' 
+                  : 'bg-white dark:bg-card text-neutral-400 border border-purple-50/50 dark:border-white/5'
+              }`}
+            >
+              {cat.icon}
+              {cat.label}
+            </button>
+          ))}
+        </div>
+
         <div className="grid gap-3.5">
           <AnimatePresence mode="popLayout">
-            {products?.map((product, index) => {
+            {products?.filter(p => {
+              if (selectedCategory === 'all') return true;
+              const n = (p.name + " " + p.type).toLowerCase();
+              if (selectedCategory === 'aws') return n.includes('aws') || n.includes('amazon');
+              if (selectedCategory === 'digitalocean') return n.includes('digitalocean') || n.includes('digital ocean');
+              return n.includes(selectedCategory);
+            }).map((product, index) => {
               const theme = getProviderTheme(product.name, product.type);
               return (
                 <motion.div
