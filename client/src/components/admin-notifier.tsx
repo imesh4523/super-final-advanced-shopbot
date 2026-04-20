@@ -47,7 +47,9 @@ export function AdminNotifier() {
       try {
         // Register Service Worker
         const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('Service Worker registered');
+        
+        // Wait for it to be active
+        await navigator.serviceWorker.ready;
 
         // Get Public VAPID Key
         const res = await fetch('/api/admin/push-key');
@@ -62,6 +64,11 @@ export function AdminNotifier() {
             applicationServerKey: urlBase64ToUint8Array(publicKey)
           });
           console.log('User subscribed to push');
+          
+          toast({
+            title: "Notifications Enabled",
+            description: "You will now receive native push notifications for orders.",
+          });
         }
 
         // Send subscription to backend
@@ -76,10 +83,18 @@ export function AdminNotifier() {
       }
     };
 
-    setupNativePush();
+    // Listen for manual trigger
+    const handleTrigger = () => setupNativePush();
+    window.addEventListener('trigger-push-setup', handleTrigger);
+
+    // Initial attempt (might fail if permission not granted yet)
+    if (Notification.permission === 'granted') {
+      setupNativePush();
+    }
 
     return () => {
       socket.disconnect();
+      window.removeEventListener('trigger-push-setup', handleTrigger);
     };
   }, [user, toast]);
 

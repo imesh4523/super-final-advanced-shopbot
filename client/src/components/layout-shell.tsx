@@ -130,6 +130,18 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           <div className="flex justify-center mb-4">
             <ThemeToggle />
           </div>
+          
+          {typeof window !== 'undefined' && Notification.permission !== 'granted' && (
+            <Button 
+              variant="outline" 
+              className="w-full glass-panel border-purple-500/30 text-purple-400 hover:bg-purple-500/10 rounded-2xl py-6 font-black uppercase tracking-widest text-[10px]"
+              onClick={() => window.dispatchEvent(new CustomEvent('trigger-push-setup'))}
+            >
+              <Megaphone className="w-4 h-4 mr-2" />
+              Enable Push Alerts
+            </Button>
+          )}
+
           <SupportButton onOpen={() => setIsChatOpen(true)} />
           <div className="relative py-4 group/watermark">
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-blue-500/10 to-purple-500/10 blur-xl opacity-0 group-hover/watermark:opacity-100 transition-opacity duration-700" />
