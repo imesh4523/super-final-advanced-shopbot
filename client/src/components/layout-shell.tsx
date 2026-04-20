@@ -60,7 +60,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           <div className="w-14 h-14 rounded-2xl overflow-hidden shadow-2xl border border-white/10 group-hover:scale-110 transition-transform duration-500">
             <img src="/logo.png" className="w-full h-full object-cover" />
           </div>
-          Market Hub
+          Shopeefy
         </div>
       </div>
       <div className="flex-1 overflow-y-auto pb-6">

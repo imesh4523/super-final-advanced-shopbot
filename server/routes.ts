@@ -3928,7 +3928,7 @@ BackupService.startBackupScheduler().catch(err => console.error("Backup schedule
     console.log('[PUSH] Manual test trigger by user:', req.session.userId);
     await sendAdminPushNotification(
       'Test Alert',
-      'This is a test notification from Market Hub!',
+      'This is a test notification from Shopeefy!',
       '/settings'
     );
     res.json({ success: true });

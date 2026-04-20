@@ -1,7 +1,7 @@
 {
-  "name": "Market Hub",
-  "short_name": "Market Hub",
-  "description": "Market Hub Admin Panel",
+  "name": "Shopeefy",
+  "short_name": "Shopeefy",
+  "description": "Shopeefy Admin Panel",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

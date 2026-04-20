@@ -1,7 +1,25 @@
 import webpush from 'web-push';
 import { storage } from './storage';
 
+import { db } from './db';
+import { sql } from 'drizzle-orm';
+
 export async function initPushNotifications() {
+  // Ensure table exists (Fallback)
+  try {
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS push_subscriptions (
+        id SERIAL PRIMARY KEY,
+        user_id INTEGER NOT NULL REFERENCES users(id),
+        subscription JSONB NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      );
+    `);
+    console.log('[PUSH] push_subscriptions table verified');
+  } catch (err) {
+    console.error('[PUSH] Table creation error:', err);
+  }
+
   const publicKey = "BLi12JZdvdRbULvhPcN-pwedf_t72vUTO4XT-R_AfB58GRSfr_wkB7G-KFffQXFclHxhOQn4Qf-yidRm0o0_Img";
   const privateKey = "rfNmhj1wxk2Bo4zjk5lY7PeOadLP6ZHbvVooox7qdIY";
   const subject = "mailto:imeshcheak@gmail.com";

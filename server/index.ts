@@ -77,6 +77,10 @@ async function startServer() {
   try {
     await registerRoutes(httpServer, app, io);
     
+    // Initialize Admin and Database Tables
+    const { storage } = await import("./storage");
+    await storage.initializeAdmin();
+
     // Start AWS Background Sync
     const { startAwsBackgroundSync } = await import("./aws-service");
     startAwsBackgroundSync();
