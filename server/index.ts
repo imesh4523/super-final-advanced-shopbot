@@ -2,9 +2,20 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { Server } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
+const io = new Server(httpServer, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on("connection", (socket) => {
+  log(`Client connected: ${socket.id}`, "socket.io");
+});
 
 declare module "http" {
   interface IncomingMessage {
@@ -64,7 +75,7 @@ app.use((req, res, next) => {
 
 async function startServer() {
   try {
-    await registerRoutes(httpServer, app);
+    await registerRoutes(httpServer, app, io);
     
     // Start AWS Background Sync
     const { startAwsBackgroundSync } = await import("./aws-service");

@@ -1,7 +1,8 @@
 import type { Express, Request, Response, NextFunction } from "express";
 // Triggering auto-deploy for V-7
 import express from "express";
-import { type Server } from "http";
+import { type Server as HttpServer } from "http";
+import { Server as SocketServer } from "socket.io";
 import path from 'path';
 import fs from 'fs';
 import multer from 'multer';
@@ -47,9 +48,10 @@ const storage_disk = multer.diskStorage({
 const upload = multer({ storage: storage_disk });
 
 export async function registerRoutes(
-  httpServer: Server,
-  app: Express
-): Promise<Server> {
+  httpServer: HttpServer,
+  app: Express,
+  io: SocketServer
+): Promise<HttpServer> {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new (pgStore as any)({
@@ -429,6 +431,14 @@ export async function registerRoutes(
         console.error("Failed to send bot DM for purchase:", err);
       });
 
+      // Emit real-time notification to Admin Dashboard
+      io.emit('admin_notification', {
+        type: 'purchase',
+        title: 'New Purchase',
+        message: `${tgUser.first_name} bought ${result.quantity}x ${result.product.name} ($${((result.product.price * result.quantity) / 100).toFixed(2)})`,
+        data: result
+      });
+
       res.json({
         success: true,
         message: "Purchase completed.",
@@ -516,6 +526,14 @@ export async function registerRoutes(
       successMsg += `\nEnjoy your premium bundle! <tg-emoji emoji-id="5456343263340405032">🛍️</tg-emoji>`;
 
       bot?.sendMessage(tgUser.id, successMsg, { parse_mode: 'HTML' }).catch(console.error);
+
+      // Emit real-time notification to Admin Dashboard
+      io.emit('admin_notification', {
+        type: 'purchase',
+        title: 'New Bundle Purchase',
+        message: `${tgUser.first_name} claimed bundle: ${result.offer.name} ($${(result.offer.price / 100).toFixed(2)})`,
+        data: result
+      });
       res.json({ success: true, message: "Purchase successful", newBalance: result.newBalance / 100 });
     } catch (err: any) {
       res.status(400).json({ message: err.message });
@@ -2342,6 +2360,14 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
                   { text: '❌ Reject', callback_data: `reject_dep_${userId}` }
                 ]]
               }
+            });
+
+            // Emit real-time notification to Admin Dashboard
+            io.emit('admin_notification', {
+              type: 'deposit',
+              title: 'New Deposit Proof',
+              message: `User ${userId} sent a proof for $${amount} via ${method}`,
+              data: { userId, amount, method }
             });
           }
         }

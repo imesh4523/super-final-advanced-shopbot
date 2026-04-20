@@ -1,7 +1,7 @@
 {
-  "name": "Telegram Bot Manager",
-  "short_name": "TG Manager",
-  "description": "Admin panel and bot for managing telegram shop",
+  "name": "Shopeefy",
+  "short_name": "Shopeefy",
+  "description": "Shopeefy Admin Panel",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
