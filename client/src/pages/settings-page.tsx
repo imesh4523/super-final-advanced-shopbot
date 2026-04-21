@@ -29,6 +29,8 @@ export default function SettingsPage() {
   const [supportUsername, setSupportUsername] = useState("");
   const [supportBtnText, setSupportBtnText] = useState("");
   const [loadingText, setLoadingText] = useState("");
+  const [adminEmail, setAdminEmail] = useState("");
+  const [adminPassword, setAdminPassword] = useState("");
 
   const { data: setting, isLoading: isTokenLoading } = useQuery<{ key: string, value: string }>({
     queryKey: ["/api/settings/TELEGRAM_BOT_TOKEN"],
@@ -494,6 +496,27 @@ export default function SettingsPage() {
     }
   });
 
+  const adminCredentialsMutation = useMutation({
+    mutationFn: async (data: { newEmail: string; newPassword: string }) => {
+      const res = await apiRequest("POST", "/api/admin/credentials", data);
+      return res.json();
+    },
+    onSuccess: () => {
+      setAdminPassword("");
+      toast({
+        title: "Admin Credentials Updated",
+        description: "Your login email and password have been updated successfully.",
+      });
+    },
+    onError: (err: Error) => {
+      toast({
+        title: "Update Failed",
+        description: err.message || "Failed to update admin credentials.",
+        variant: "destructive",
+      });
+    }
+  });
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -573,6 +596,52 @@ export default function SettingsPage() {
                 If provided, this bot will be used for sending broadcasts instead of the main bot.
               </p>
             </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="max-w-2xl">
+        <Card className="glass-card border-0">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold flex items-center gap-2">
+              <Lock className="w-5 h-5 text-purple-400" />
+              Admin Login Credentials
+            </CardTitle>
+            <CardDescription className="text-white/60">
+              Update the email and password used to access this dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">New Login Email</Label>
+              <Input
+                type="email"
+                placeholder="Enter new admin email..."
+                className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2 pt-4 border-t border-white/5">
+              <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">New Login Password</Label>
+              <Input
+                type="password"
+                placeholder="Enter new admin password..."
+                className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                value={adminPassword}
+                onChange={(e) => setAdminPassword(e.target.value)}
+              />
+            </div>
+
+            <Button 
+              onClick={() => adminCredentialsMutation.mutate({ newEmail: adminEmail, newPassword: adminPassword })}
+              disabled={adminCredentialsMutation.isPending || !adminEmail || !adminPassword}
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 font-bold"
+            >
+              {adminCredentialsMutation.isPending ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
+              Update Credentials
+            </Button>
           </CardContent>
         </Card>
       </div>

