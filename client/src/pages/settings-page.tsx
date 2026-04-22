@@ -16,12 +16,8 @@ export default function SettingsPage() {
   const [supportContact, setSupportContact] = useState("");
   const [cryptomusApiKey, setCryptomusApiKey] = useState("");
   const [cryptomusMerchantId, setCryptomusMerchantId] = useState("");
-  const [binancePayId, setBinancePayId] = useState("");
   const [binanceApiKey, setBinanceApiKey] = useState("");
   const [binanceSecretKey, setBinanceSecretKey] = useState("");
-  const [bybitPayId, setBybitPayId] = useState("");
-  const [bybitApiKey, setBybitApiKey] = useState("");
-  const [bybitSecretKey, setBybitSecretKey] = useState("");
   const [faqText, setFaqText] = useState("");
   const [howToBuyVideo, setHowToBuyVideo] = useState("");
   const [howToDepositVideo, setHowToDepositVideo] = useState("");
@@ -64,18 +60,6 @@ export default function SettingsPage() {
     queryKey: ["/api/settings/BINANCE_SECRET_KEY"],
   });
 
-  const { data: bybitSetting, isLoading: isBybitLoading } = useQuery<{ key: string, value: string }>({
-    queryKey: ["/api/settings/BYBIT_PAY_ID"],
-  });
-
-  const { data: bybitApiSetting, isLoading: isBybitApiLoading } = useQuery<{ key: string, value: string }>({
-    queryKey: ["/api/settings/BYBIT_API_KEY"],
-  });
-
-  const { data: bybitSecretSetting, isLoading: isBybitSecretLoading } = useQuery<{ key: string, value: string }>({
-    queryKey: ["/api/settings/BYBIT_SECRET_KEY"],
-  });
-
   const { data: faqSetting, isLoading: isFaqLoading } = useQuery<{ key: string, value: string }>({
     queryKey: ["/api/settings/faq_content"],
   });
@@ -90,10 +74,6 @@ export default function SettingsPage() {
 
   const { data: binanceEnabledSetting, isLoading: isBinanceEnabledLoading } = useQuery<{ key: string, value: string }>({
     queryKey: ["/api/settings/PAYMENT_BINANCE_ENABLED"],
-  });
-
-  const { data: bybitEnabledSetting, isLoading: isBybitEnabledLoading } = useQuery<{ key: string, value: string }>({
-    queryKey: ["/api/settings/PAYMENT_BYBIT_ENABLED"],
   });
 
   const { data: cryptomusEnabledSetting, isLoading: isCryptomusEnabledLoading } = useQuery<{ key: string, value: string }>({
@@ -126,14 +106,12 @@ export default function SettingsPage() {
 
   const isLoading = isTokenLoading || isBroadcastLoading || isSupportLoading || isCryptomusLoading ||
     isMerchantLoading || isBinanceLoading || isBinanceApiLoading || isBinanceSecretLoading ||
-    isBybitLoading || isBybitApiLoading || isBybitSecretLoading || isFaqLoading ||
-    isHowToBuyLoading || isHowToDepositLoading || isBinanceEnabledLoading ||
-    isBybitEnabledLoading || isCryptomusEnabledLoading || isAutomationEnabledLoading ||
+    isFaqLoading || isHowToBuyLoading || isHowToDepositLoading || isBinanceEnabledLoading ||
+    isCryptomusEnabledLoading || isAutomationEnabledLoading ||
     isSpecialOffersEnabledLoading || isStoreNameLoading || isSupportUsernameLoading ||
     isSupportBtnTextLoading || isLoadingTextLoading;
 
   const [binanceEnabled, setBinanceEnabled] = useState(true);
-  const [bybitEnabled, setBybitEnabled] = useState(true);
   const [cryptomusEnabled, setCryptomusEnabled] = useState(true);
   const [automationEnabled, setAutomationEnabled] = useState(true);
   const [specialOffersEnabled, setSpecialOffersEnabled] = useState(true);
@@ -141,10 +119,6 @@ export default function SettingsPage() {
   useEffect(() => {
     if (binanceEnabledSetting?.value !== undefined) setBinanceEnabled(binanceEnabledSetting.value === "true");
   }, [binanceEnabledSetting]);
-
-  useEffect(() => {
-    if (bybitEnabledSetting?.value !== undefined) setBybitEnabled(bybitEnabledSetting.value === "true");
-  }, [bybitEnabledSetting]);
 
   useEffect(() => {
     if (cryptomusEnabledSetting?.value !== undefined) setCryptomusEnabled(cryptomusEnabledSetting.value === "true");
@@ -189,18 +163,6 @@ export default function SettingsPage() {
   useEffect(() => {
     if (binanceSecretSetting?.value !== undefined) setBinanceSecretKey(binanceSecretSetting.value);
   }, [binanceSecretSetting]);
-
-  useEffect(() => {
-    if (bybitSetting?.value !== undefined) setBybitPayId(bybitSetting.value);
-  }, [bybitSetting]);
-
-  useEffect(() => {
-    if (bybitApiSetting?.value !== undefined) setBybitApiKey(bybitApiSetting.value);
-  }, [bybitApiSetting]);
-
-  useEffect(() => {
-    if (bybitSecretSetting?.value !== undefined) setBybitSecretKey(bybitSecretSetting.value);
-  }, [bybitSecretSetting]);
 
   useEffect(() => {
     if (faqSetting?.value !== undefined) setFaqText(faqSetting.value);
@@ -362,57 +324,6 @@ export default function SettingsPage() {
       toast({
         title: "Binance Secret Key Updated",
         description: "Binance Secret Key has been saved.",
-      });
-    }
-  });
-
-  const bybitPayMutation = useMutation({
-    mutationFn: async (value: string) => {
-      const res = await apiRequest("POST", "/api/settings", {
-        key: "BYBIT_PAY_ID",
-        value
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/BYBIT_PAY_ID"] });
-      toast({
-        title: "Bybit UID Updated",
-        description: "Bybit UID has been saved.",
-      });
-    }
-  });
-
-  const bybitApiKeyMutation = useMutation({
-    mutationFn: async (value: string) => {
-      const res = await apiRequest("POST", "/api/settings", {
-        key: "BYBIT_API_KEY",
-        value
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/BYBIT_API_KEY"] });
-      toast({
-        title: "Bybit API Key Updated",
-        description: "Bybit API Key has been saved.",
-      });
-    }
-  });
-
-  const bybitSecretKeyMutation = useMutation({
-    mutationFn: async (value: string) => {
-      const res = await apiRequest("POST", "/api/settings", {
-        key: "BYBIT_SECRET_KEY",
-        value
-      });
-      return res.json();
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/settings/BYBIT_SECRET_KEY"] });
-      toast({
-        title: "Bybit Secret Key Updated",
-        description: "Bybit Secret Key has been saved.",
       });
     }
   });
@@ -1062,89 +973,6 @@ export default function SettingsPage() {
                     </Button>
                   </div>
                   <p className="text-[10px] text-white/40">Required for automated payment verification.</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="h-px bg-white/5" />
-
-            {/* Bybit Section */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-orange-500">Bybit Integration</h3>
-                <Button
-                  variant={bybitEnabled ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => {
-                    const newValue = !bybitEnabled;
-                    setBybitEnabled(newValue);
-                    togglePaymentMutation.mutate({ key: "PAYMENT_BYBIT_ENABLED", value: newValue.toString() });
-                  }}
-                  className={bybitEnabled ? "bg-green-500 hover:bg-green-600" : "border-white/20"}
-                >
-                  {bybitEnabled ? "Enabled" : "Disabled"}
-                </Button>
-              </div>
-
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-white/50 uppercase tracking-widest">Bybit UID</Label>
-                  <div className="flex gap-3">
-                    <Input
-                      placeholder="Enter your Bybit UID..."
-                      className="glass-panel border-white/10 bg-white/5 text-white h-12"
-                      value={bybitPayId}
-                      onChange={(e) => setBybitPayId(e.target.value)}
-                    />
-                    <Button
-                      onClick={() => bybitPayMutation.mutate(bybitPayId)}
-                      disabled={bybitPayMutation.isPending}
-                      className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
-                    >
-                      <Save className="w-5 h-5" />
-                    </Button>
-                  </div>
-                  <p className="text-[10px] text-white/40">Your Bybit UID for manual transfers.</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-white/50 uppercase tracking-widest">Bybit API Key</Label>
-                  <div className="flex gap-3">
-                    <Input
-                      type="password"
-                      placeholder="Enter Bybit API Key..."
-                      className="glass-panel border-white/10 bg-white/5 text-white h-12"
-                      value={bybitApiKey}
-                      onChange={(e) => setBybitApiKey(e.target.value)}
-                    />
-                    <Button
-                      onClick={() => bybitApiKeyMutation.mutate(bybitApiKey)}
-                      disabled={bybitApiKeyMutation.isPending}
-                      className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
-                    >
-                      <Save className="w-5 h-5" />
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label className="text-xs font-bold text-white/50 uppercase tracking-widest">Bybit Secret Key</Label>
-                  <div className="flex gap-3">
-                    <Input
-                      type="password"
-                      placeholder="Enter Bybit Secret Key..."
-                      className="glass-panel border-white/10 bg-white/5 text-white h-12"
-                      value={bybitSecretKey}
-                      onChange={(e) => setBybitSecretKey(e.target.value)}
-                    />
-                    <Button
-                      onClick={() => bybitSecretKeyMutation.mutate(bybitSecretKey)}
-                      disabled={bybitSecretKeyMutation.isPending}
-                      className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
-                    >
-                      <Save className="w-5 h-5" />
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
