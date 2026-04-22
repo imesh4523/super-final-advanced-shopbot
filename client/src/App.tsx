@@ -123,7 +123,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light" storageKey="shopeefy-theme">
+      <ThemeProvider defaultTheme="dark" storageKey="shopeefy-theme">
         <TooltipProvider>
           <Toaster />
           <AdminNotifier />

@@ -104,7 +104,7 @@ function CredentialsDialog({ product }: { product: Product }) {
           Manage Credentials
         </Button>
       </DialogTrigger>
-      <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[600px] rounded-3xl p-8 shadow-4xl">
+      <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[600px] rounded-3xl p-8 shadow-4xl">
         <DialogHeader>
           <DialogTitle className="text-xl font-black text-white tracking-tighter">Manage Credentials - {product.name}</DialogTitle>
         </DialogHeader>
@@ -129,7 +129,7 @@ function CredentialsDialog({ product }: { product: Product }) {
                   </FormItem>
                 )}
               />
-              <Button type="submit" disabled={createMutation.isPending} className="w-full bg-white text-black hover:bg-white/90 font-black uppercase tracking-widest text-[9px] h-10 rounded-xl">
+              <Button type="submit" disabled={createMutation.isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:opacity-90 font-black uppercase tracking-widest text-[9px] h-10 rounded-xl shadow-lg transition-all active:scale-95">
                 {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Add Credential
               </Button>
@@ -358,7 +358,7 @@ function ProductActions({ product }: { product: any }) {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl rounded-xl p-1.5 shadow-4xl min-w-[160px]">
+        <DropdownMenuContent align="end" className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl rounded-xl p-1.5 shadow-4xl min-w-[160px]">
           <DropdownMenuLabel className="text-[9px] font-black uppercase tracking-widest text-white/30 px-2.5 py-1.5">Management</DropdownMenuLabel>
           <DropdownMenuItem 
             onClick={() => setIsEditOpen(true)}
@@ -447,7 +447,7 @@ function EditProductDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
+      <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-2xl font-black text-white tracking-tighter flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white shadow-md">
@@ -489,7 +489,7 @@ function EditProductDialog({
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="glass-panel border-white/10 bg-[#0f0a1e] text-white rounded-xl">
+                      <SelectContent className="glass-panel border-white/10 bg-background text-white rounded-xl">
                         <SelectItem value="AWS">AWS</SelectItem>
                         <SelectItem value="DigitalOcean">DigitalOcean</SelectItem>
                         <SelectItem value="Google Cloud">Google Cloud</SelectItem>
@@ -556,7 +556,7 @@ function EditProductDialog({
               <Button type="button" variant="ghost" onClick={() => onOpenChange(false)} className="h-11 px-6 rounded-xl text-white/40 hover:text-white hover:bg-white/5 font-black uppercase tracking-widest text-[9px]">
                 Cancel
               </Button>
-              <Button type="submit" disabled={updateMutation.isPending} className="h-11 px-8 rounded-xl bg-white text-black hover:bg-white/90 font-black uppercase tracking-widest text-[9px] shadow-xl">
+              <Button type="submit" disabled={updateMutation.isPending} className="h-11 px-8 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:opacity-90 font-black uppercase tracking-widest text-[9px] shadow-xl transition-all active:scale-95">
                 {updateMutation.isPending ? "Updating..." : "Update Product"}
               </Button>
             </DialogFooter>
@@ -597,7 +597,7 @@ function CustomBroadcastDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
+      <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-2xl font-black text-white tracking-tighter flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white shadow-md">
@@ -634,7 +634,7 @@ function CustomBroadcastDialog({
                 broadcastMutation.mutate(message);
               }}
               disabled={broadcastMutation.isPending} 
-              className="h-11 px-8 rounded-xl bg-white text-black hover:bg-white/90 font-black uppercase tracking-widest text-[9px] shadow-xl"
+              className="h-11 px-8 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:opacity-90 font-black uppercase tracking-widest text-[9px] shadow-xl transition-all active:scale-95"
             >
               {broadcastMutation.isPending ? "Sending..." : "Send Broadcast"}
             </Button>
@@ -690,7 +690,7 @@ function CreateProductDialog({ open, onOpenChange }: { open: boolean, onOpenChan
           <Plus className="mr-2 h-4 w-4" /> Add
         </Button>
       </DialogTrigger>
-      <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
+      <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl animate-in fade-in zoom-in duration-300">
         <DialogHeader className="mb-6">
           <DialogTitle className="text-2xl font-black text-white tracking-tighter flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white shadow-md">
@@ -732,7 +732,7 @@ function CreateProductDialog({ open, onOpenChange }: { open: boolean, onOpenChan
                           <SelectValue placeholder="Select type" />
                         </SelectTrigger>
                       </FormControl>
-                      <SelectContent className="glass-panel border-white/10 bg-[#0f0a1e] text-white rounded-xl">
+                      <SelectContent className="glass-panel border-white/10 bg-background text-white rounded-xl">
                         <SelectItem value="AWS">AWS</SelectItem>
                         <SelectItem value="DigitalOcean">DigitalOcean</SelectItem>
                         <SelectItem value="Google Cloud">Google Cloud</SelectItem>

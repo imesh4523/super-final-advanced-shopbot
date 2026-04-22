@@ -8,71 +8,71 @@
   --font-sans: 'Plus Jakarta Sans', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
-  /* Premium Light Glass UI Palette */
-  --background: 260 20% 98%;
-  --foreground: 260 60% 10%;
+  /* Premium Purple Light Palette */
+  --background: 260 40% 98%;
+  --foreground: 260 60% 15%;
 
   --card: 0 0% 100%;
-  --card-foreground: 260 60% 10%;
+  --card-foreground: 260 60% 15%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 260 60% 10%;
+  --popover-foreground: 260 60% 15%;
 
-  --primary: 270 80% 50%;
-  --primary-foreground: 210 40% 98%;
+  --primary: 270 90% 55%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 260 30% 90%;
-  --secondary-foreground: 260 60% 15%;
+  --secondary: 260 50% 94%;
+  --secondary-foreground: 260 60% 20%;
 
-  --muted: 260 30% 90%;
-  --muted-foreground: 260 20% 40%;
+  --muted: 260 30% 94%;
+  --muted-foreground: 260 20% 45%;
 
-  --accent: 260 30% 90%;
-  --accent-foreground: 260 60% 15%;
+  --accent: 260 50% 94%;
+  --accent-foreground: 260 60% 20%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 260 30% 85%;
-  --input: 260 30% 85%;
-  --ring: 270 80% 50%;
+  --border: 260 40% 90%;
+  --input: 260 40% 90%;
+  --ring: 270 90% 55%;
 
   --radius: 1.25rem;
 
-  --bg-gradient: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --bg-gradient: linear-gradient(135deg, #fdf4ff 0%, #fae8ff 50%, #f5f3ff 100%);
 }
 
 .dark {
-  /* Premium Purple-Blue Glass UI Palette */
-  --background: 260 60% 5%;
-  --foreground: 210 40% 98%;
+  /* Ultra-Premium Purple Dark Palette */
+  --background: 265 60% 3%;
+  --foreground: 260 30% 98%;
 
-  --card: 260 60% 10%;
-  --card-foreground: 210 40% 98%;
+  --card: 265 60% 6%;
+  --card-foreground: 260 30% 98%;
 
-  --popover: 260 60% 5%;
-  --popover-foreground: 210 40% 98%;
+  --popover: 265 60% 4%;
+  --popover-foreground: 260 30% 98%;
 
-  --primary: 270 80% 60%;
-  --primary-foreground: 210 40% 98%;
+  --primary: 275 90% 65%;
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 260 60% 15%;
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 265 60% 10%;
+  --secondary-foreground: 260 30% 98%;
 
-  --muted: 260 60% 15%;
-  --muted-foreground: 215 20% 65%;
+  --muted: 265 40% 12%;
+  --muted-foreground: 260 20% 75%;
 
-  --accent: 260 60% 15%;
-  --accent-foreground: 210 40% 98%;
+  --accent: 275 90% 65%;
+  --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 84.2% 60.2%;
+  --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 260 60% 20%;
-  --input: 260 60% 20%;
-  --ring: 270 80% 60%;
+  --border: 265 60% 15%;
+  --input: 265 60% 15%;
+  --ring: 275 90% 65%;
 
-  --bg-gradient: linear-gradient(135deg, #4c1d95 0%, #1e1b4b 50%, #0f172a 100%);
+  --bg-gradient: linear-gradient(135deg, #0f0a1e 0%, #1e1035 40%, #2d1b4d 70%, #0f0a1e 100%);
 }
 
 @layer base {
@@ -92,11 +92,11 @@
 }
 
 .glass-panel {
-  @apply bg-white/50 dark:bg-white/5 backdrop-blur-2xl border border-black/10 dark:border-white/10 shadow-2xl;
+  @apply bg-white/60 dark:bg-purple-950/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-4xl;
 }
 
 .glass-card {
-  @apply bg-white/40 dark:bg-white/[0.03] backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-2xl transition-all duration-500 hover:bg-white/60 dark:hover:bg-white/[0.06] hover:border-black/10 dark:hover:border-white/20 hover:scale-[1.02] hover:shadow-primary/20;
+  @apply bg-white/50 dark:bg-purple-900/10 backdrop-blur-2xl border border-white/10 dark:border-white/5 shadow-2xl transition-all duration-500 hover:bg-white/70 dark:hover:bg-purple-900/20 hover:border-primary/30 dark:hover:border-primary/40 hover:shadow-primary/30;
 }
 
 /* Background Animated Orbs matching Image 2 */
