@@ -142,7 +142,7 @@ export default function InventoryPage() {
                 <Plus className="mr-2 h-4 w-4" /> Add Credentials
               </Button>
             </DialogTrigger>
-            <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl">
+            <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-black text-white tracking-tighter flex items-center gap-3">
                   <Key className="w-5 h-5 text-purple-400" />
@@ -163,7 +163,7 @@ export default function InventoryPage() {
                               <SelectValue placeholder="Select a product" />
                             </SelectTrigger>
                           </FormControl>
-                          <SelectContent className="glass-panel border-white/10 bg-[#0f0a1e] text-white rounded-xl">
+                          <SelectContent className="glass-panel border-white/10 bg-background text-white rounded-xl">
                             {products?.map(p => (
                               <SelectItem key={p.id} value={p.id.toString()}>{p.name}</SelectItem>
                             ))}
@@ -191,7 +191,7 @@ export default function InventoryPage() {
                     )}
                   />
                   <DialogFooter>
-                    <Button type="submit" disabled={createMutation.isPending} className="w-full bg-white text-black hover:bg-white/90 font-black uppercase tracking-widest text-[9px] h-11 rounded-xl shadow-xl">
+                    <Button type="submit" disabled={createMutation.isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:opacity-90 font-black uppercase tracking-widest text-[9px] h-11 rounded-xl shadow-xl transition-all active:scale-95">
                       {createMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Add to Inventory
                     </Button>
@@ -280,7 +280,7 @@ export default function InventoryPage() {
                               <Edit2 className="h-4 w-4" />
                             </Button>
                           </DialogTrigger>
-                          <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl">
+                          <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-[500px] rounded-3xl p-8 shadow-4xl">
                             <DialogHeader>
                               <DialogTitle className="text-2xl font-black text-white tracking-tighter flex items-center gap-3">
                                 <Edit2 className="w-5 h-5 text-purple-400" />
@@ -404,7 +404,7 @@ function EditCredentialForm({
           )}
         />
         <DialogFooter>
-          <Button type="submit" disabled={mutation.isPending} className="w-full bg-white text-black hover:bg-white/90 font-black uppercase tracking-widest text-[9px] h-11 rounded-xl shadow-xl">
+          <Button type="submit" disabled={mutation.isPending} className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white hover:opacity-90 font-black uppercase tracking-widest text-[9px] h-11 rounded-xl shadow-xl transition-all active:scale-95">
             {mutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Update Credential
           </Button>

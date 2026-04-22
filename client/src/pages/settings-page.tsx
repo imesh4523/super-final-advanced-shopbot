@@ -556,7 +556,7 @@ export default function SettingsPage() {
                   id="token"
                   type="password"
                   placeholder="Paste your bot token here..."
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                 />
@@ -580,7 +580,7 @@ export default function SettingsPage() {
                   id="broadcast-token"
                   type="password"
                   placeholder="Separate token for broadcasting..."
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={broadcastToken}
                   onChange={(e) => setBroadcastToken(e.target.value)}
                 />
@@ -602,22 +602,22 @@ export default function SettingsPage() {
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Lock className="w-5 h-5 text-purple-400" />
-              Admin Login Credentials
-            </CardTitle>
-            <CardDescription className="text-white/60">
-              Update the email and password used to access this dashboard.
-            </CardDescription>
-          </CardHeader>
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-6 border-b border-white/10">
+              <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                <Lock className="w-6 h-6 text-purple-400" />
+                Admin Login Credentials
+              </CardTitle>
+              <CardDescription className="text-white/40">
+                Update the email and password used to access this dashboard.
+              </CardDescription>
+            </div>
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">New Login Email</Label>
               <Input
                 type="email"
                 placeholder="Enter new admin email..."
-                className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
               />
@@ -628,7 +628,7 @@ export default function SettingsPage() {
               <Input
                 type="password"
                 placeholder="Enter new admin password..."
-                className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                 value={adminPassword}
                 onChange={(e) => setAdminPassword(e.target.value)}
               />
@@ -648,14 +648,14 @@ export default function SettingsPage() {
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              ⚙️ Advanced
-            </CardTitle>
-            <CardDescription className="text-white/60">
-              Configure advanced bot settings.
-            </CardDescription>
-          </CardHeader>
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-6 border-b border-white/10">
+              <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                ⚙️ Advanced
+              </CardTitle>
+              <CardDescription className="text-white/40">
+                Configure advanced bot settings.
+              </CardDescription>
+            </div>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 glass-panel rounded-xl border-white/5">
               <div className="space-y-0.5">
@@ -702,7 +702,7 @@ export default function SettingsPage() {
                   id="support"
                   type="text"
                   placeholder="e.g. @rochana_imesh"
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={supportContact}
                   onChange={(e) => setSupportContact(e.target.value)}
                 />
@@ -725,7 +725,7 @@ export default function SettingsPage() {
                 <Textarea
                   id="faq"
                   placeholder="Enter FAQ content..."
-                  className="glass-panel border-white/10 bg-white/5 text-white min-h-[150px] rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white min-h-[150px] rounded-xl focus:border-purple-500/50 transition-all"
                   value={faqText}
                   onChange={(e) => setFaqText(e.target.value)}
                 />
@@ -744,22 +744,22 @@ export default function SettingsPage() {
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-purple-400" />
-              Branding & Customization
-            </CardTitle>
-            <CardDescription className="text-white/60">
-              Personalize your store and support contact information.
-            </CardDescription>
-          </CardHeader>
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-6 border-b border-white/10">
+              <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                <Sparkles className="w-6 h-6 text-purple-400" />
+                Branding & Customization
+              </CardTitle>
+              <CardDescription className="text-white/40">
+                Personalize your store and support contact information.
+              </CardDescription>
+            </div>
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">Store Name</Label>
               <div className="flex gap-3">
                 <Input
                   placeholder="e.g. Shopeefy Cloud Store"
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                 />
@@ -778,7 +778,7 @@ export default function SettingsPage() {
               <div className="flex gap-3">
                 <Input
                   placeholder="e.g. @rochana_imesh"
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={supportUsername}
                   onChange={(e) => setSupportUsername(e.target.value)}
                 />
@@ -797,7 +797,7 @@ export default function SettingsPage() {
               <div className="flex gap-3">
                 <Input
                   placeholder="e.g. Write to Support"
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={supportBtnText}
                   onChange={(e) => setSupportBtnText(e.target.value)}
                 />
@@ -816,7 +816,7 @@ export default function SettingsPage() {
               <div className="flex gap-3">
                 <Input
                   placeholder="e.g. Shopeefy..."
-                  className="glass-panel border-white/10 bg-white/5 text-white h-12 rounded-xl"
+                  className="glass-panel border-white/10 bg-purple-950/20 text-white h-12 rounded-xl focus:border-purple-500/50 transition-all"
                   value={loadingText}
                   onChange={(e) => setLoadingText(e.target.value)}
                 />
@@ -844,15 +844,15 @@ export default function SettingsPage() {
 
       <div className="max-w-2xl">
         <Card className="glass-card border-0">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
-              <Megaphone className="w-5 h-5 text-purple-400" />
-              Admin Notifications
-            </CardTitle>
-            <CardDescription className="text-white/60">
-              Enable native browser push notifications to receive alerts even when the dashboard is closed.
-            </CardDescription>
-          </CardHeader>
+            <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-6 border-b border-white/10">
+              <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
+                <Megaphone className="w-6 h-6 text-purple-400" />
+                Admin Notifications
+              </CardTitle>
+              <CardDescription className="text-white/40">
+                Enable native browser push notifications to receive alerts.
+              </CardDescription>
+            </div>
           <CardContent className="space-y-6">
             <div className="flex items-center justify-between p-4 glass-panel rounded-xl border-white/5">
               <div className="space-y-0.5">
@@ -1153,16 +1153,16 @@ export default function SettingsPage() {
       </div>
 
       <div className="max-w-2xl pb-20">
-        <Card className="glass-card border-0">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold flex items-center gap-2">
+        <Card className="glass-card border-0 overflow-hidden">
+          <div className="bg-gradient-to-r from-purple-500/20 to-blue-500/20 p-6 border-b border-white/10">
+            <CardTitle className="text-2xl font-black tracking-tighter flex items-center gap-3">
               🎬 Tutorial Videos
             </CardTitle>
-            <CardDescription className="text-white/60">
+            <CardDescription className="text-white/40">
               Configure tutorial video links for the bot.
             </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-8">
+          </div>
+          <CardContent className="space-y-8 pt-6">
             <div className="space-y-4">
               <Label className="text-sm font-bold text-white/70">How to Buy Product</Label>
               <div className="flex gap-3">

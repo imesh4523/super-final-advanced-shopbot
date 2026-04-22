@@ -144,7 +144,7 @@ export default function OrdersPage() {
                           <Eye className="h-5 w-5" />
                         </Button>
                       </DialogTrigger>
-                      <DialogContent className="glass-panel border-white/10 bg-[#0f0a1e]/90 backdrop-blur-3xl sm:max-w-md rounded-[2rem] p-8 shadow-4xl">
+                      <DialogContent className="glass-panel border-white/10 bg-background/95 backdrop-blur-3xl sm:max-w-md rounded-[2rem] p-8 shadow-4xl">
                         <DialogHeader className="mb-6">
                           <DialogTitle className="flex items-center gap-3 text-2xl font-black text-white tracking-tighter">
                             <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center text-white shadow-lg">
