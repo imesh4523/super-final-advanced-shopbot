@@ -124,12 +124,12 @@ export default function SettingsPage() {
     queryKey: ["/api/settings/LOADING_TEXT"],
   });
 
-  const isLoading = isTokenLoading || isBroadcastLoading || isSupportLoading || isCryptomusLoading || 
-    isMerchantLoading || isBinanceLoading || isBinanceApiLoading || isBinanceSecretLoading || 
-    isBybitLoading || isBybitApiLoading || isBybitSecretLoading || isFaqLoading || 
-    isHowToBuyLoading || isHowToDepositLoading || isBinanceEnabledLoading || 
+  const isLoading = isTokenLoading || isBroadcastLoading || isSupportLoading || isCryptomusLoading ||
+    isMerchantLoading || isBinanceLoading || isBinanceApiLoading || isBinanceSecretLoading ||
+    isBybitLoading || isBybitApiLoading || isBybitSecretLoading || isFaqLoading ||
+    isHowToBuyLoading || isHowToDepositLoading || isBinanceEnabledLoading ||
     isBybitEnabledLoading || isCryptomusEnabledLoading || isAutomationEnabledLoading ||
-    isSpecialOffersEnabledLoading || isStoreNameLoading || isSupportUsernameLoading || 
+    isSpecialOffersEnabledLoading || isStoreNameLoading || isSupportUsernameLoading ||
     isSupportBtnTextLoading || isLoadingTextLoading;
 
   const [binanceEnabled, setBinanceEnabled] = useState(true);
@@ -560,7 +560,7 @@ export default function SettingsPage() {
                   value={token}
                   onChange={(e) => setToken(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => mutation.mutate(token)}
                   disabled={mutation.isPending}
                   className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 font-bold"
@@ -584,7 +584,7 @@ export default function SettingsPage() {
                   value={broadcastToken}
                   onChange={(e) => setBroadcastToken(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => broadcastMutation.mutate(broadcastToken)}
                   disabled={broadcastMutation.isPending}
                   className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -622,7 +622,7 @@ export default function SettingsPage() {
                 onChange={(e) => setAdminEmail(e.target.value)}
               />
             </div>
-            
+
             <div className="space-y-2 pt-4 border-t border-white/5">
               <Label className="text-sm font-bold text-white/70 uppercase tracking-widest">New Login Password</Label>
               <Input
@@ -634,7 +634,7 @@ export default function SettingsPage() {
               />
             </div>
 
-            <Button 
+            <Button
               onClick={() => adminCredentialsMutation.mutate({ newEmail: adminEmail, newPassword: adminPassword })}
               disabled={adminCredentialsMutation.isPending || !adminEmail || !adminPassword}
               className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 font-bold"
@@ -706,7 +706,7 @@ export default function SettingsPage() {
                   value={supportContact}
                   onChange={(e) => setSupportContact(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => supportMutation.mutate(supportContact)}
                   disabled={supportMutation.isPending}
                   className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 hover:from-purple-600 hover:to-blue-700 font-bold"
@@ -729,7 +729,7 @@ export default function SettingsPage() {
                   value={faqText}
                   onChange={(e) => setFaqText(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => faqMutation.mutate(faqText)}
                   disabled={faqMutation.isPending}
                   className="w-full h-12 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -763,7 +763,7 @@ export default function SettingsPage() {
                   value={storeName}
                   onChange={(e) => setStoreName(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => brandingMutation.mutate({ key: "STORE_NAME", value: storeName })}
                   disabled={brandingMutation.isPending}
                   className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -782,7 +782,7 @@ export default function SettingsPage() {
                   value={supportUsername}
                   onChange={(e) => setSupportUsername(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => brandingMutation.mutate({ key: "SUPPORT_USERNAME", value: supportUsername })}
                   disabled={brandingMutation.isPending}
                   className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -801,7 +801,7 @@ export default function SettingsPage() {
                   value={supportBtnText}
                   onChange={(e) => setSupportBtnText(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => brandingMutation.mutate({ key: "SUPPORT_BTN_TEXT", value: supportBtnText })}
                   disabled={brandingMutation.isPending}
                   className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -820,7 +820,7 @@ export default function SettingsPage() {
                   value={loadingText}
                   onChange={(e) => setLoadingText(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => brandingMutation.mutate({ key: "LOADING_TEXT", value: loadingText })}
                   disabled={brandingMutation.isPending}
                   className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -858,8 +858,8 @@ export default function SettingsPage() {
               <div className="space-y-0.5">
                 <Label className="text-white font-bold">Browser Push Alerts</Label>
                 <p className="text-xs text-white/40">
-                  {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted' 
-                    ? "Notifications are enabled for this browser." 
+                  {typeof window !== 'undefined' && window.Notification && window.Notification.permission === 'granted'
+                    ? "Notifications are enabled for this browser."
                     : "Receive instant alerts for new orders and deposits."}
                 </p>
               </div>
@@ -918,7 +918,7 @@ export default function SettingsPage() {
               Configure your payment provider details and enable/disable payment methods.
             </CardDescription>
           </div>
-          
+
           <CardContent className="p-8 space-y-12">
             {/* Cryptomus Section */}
             <div className="space-y-6">
@@ -937,7 +937,7 @@ export default function SettingsPage() {
                   {cryptomusEnabled ? "Enabled" : "Disabled"}
                 </Button>
               </div>
-              
+
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label className="text-xs font-bold text-white/50 uppercase tracking-widest">Cryptomus Merchant ID</Label>
@@ -948,7 +948,7 @@ export default function SettingsPage() {
                       value={cryptomusMerchantId}
                       onChange={(e) => setCryptomusMerchantId(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => cryptomusMerchantMutation.mutate(cryptomusMerchantId)}
                       disabled={cryptomusMerchantMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -969,7 +969,7 @@ export default function SettingsPage() {
                       value={cryptomusApiKey}
                       onChange={(e) => setCryptomusApiKey(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => cryptomusMutation.mutate(cryptomusApiKey)}
                       disabled={cryptomusMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -1012,7 +1012,7 @@ export default function SettingsPage() {
                       value={binancePayId}
                       onChange={(e) => setBinancePayId(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => binancePayMutation.mutate(binancePayId)}
                       disabled={binancePayMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 font-bold"
@@ -1033,7 +1033,7 @@ export default function SettingsPage() {
                       value={binanceApiKey}
                       onChange={(e) => setBinanceApiKey(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => binanceApiKeyMutation.mutate(binanceApiKey)}
                       disabled={binanceApiKeyMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 font-bold"
@@ -1053,7 +1053,7 @@ export default function SettingsPage() {
                       value={binanceSecretKey}
                       onChange={(e) => setBinanceSecretKey(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => binanceSecretKeyMutation.mutate(binanceSecretKey)}
                       disabled={binanceSecretKeyMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 font-bold"
@@ -1096,7 +1096,7 @@ export default function SettingsPage() {
                       value={bybitPayId}
                       onChange={(e) => setBybitPayId(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => bybitPayMutation.mutate(bybitPayId)}
                       disabled={bybitPayMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
@@ -1117,7 +1117,7 @@ export default function SettingsPage() {
                       value={bybitApiKey}
                       onChange={(e) => setBybitApiKey(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => bybitApiKeyMutation.mutate(bybitApiKey)}
                       disabled={bybitApiKeyMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
@@ -1137,7 +1137,7 @@ export default function SettingsPage() {
                       value={bybitSecretKey}
                       onChange={(e) => setBybitSecretKey(e.target.value)}
                     />
-                    <Button 
+                    <Button
                       onClick={() => bybitSecretKeyMutation.mutate(bybitSecretKey)}
                       disabled={bybitSecretKeyMutation.isPending}
                       className="h-12 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 font-bold"
@@ -1172,7 +1172,7 @@ export default function SettingsPage() {
                   value={howToBuyVideo}
                   onChange={(e) => setHowToBuyVideo(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => tutorialBuyMutation.mutate(howToBuyVideo)}
                   disabled={tutorialBuyMutation.isPending}
                   className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
@@ -1191,7 +1191,7 @@ export default function SettingsPage() {
                   value={howToDepositVideo}
                   onChange={(e) => setHowToDepositVideo(e.target.value)}
                 />
-                <Button 
+                <Button
                   onClick={() => tutorialDepositMutation.mutate(howToDepositVideo)}
                   disabled={tutorialDepositMutation.isPending}
                   className="h-12 px-6 rounded-xl bg-gradient-to-r from-purple-500 to-blue-600 font-bold"
