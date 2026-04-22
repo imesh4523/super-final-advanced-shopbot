@@ -2313,7 +2313,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
         reply_markup: {
           keyboard: [
             [{ text: '🛍️ Buy' }, { text: '👤 Profile' }, { text: '📋 Availability' }],
-            [{ text: `💬 ${supportBtnText}` }, { text: '❓ FAQ' }]
+            [{ text: '💬 Write to support' }, { text: '❓ FAQ' }]
           ],
           resize_keyboard: true
         }
@@ -2741,14 +2741,14 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             parse_mode: 'HTML'
           });
         }
-      } else if (normalizedText?.includes(supportBtnText)) {
+      } else if (normalizedText?.includes('Write to support')) {
         const supportContact = (await storage.getSetting('SUPPORT_CONTACT'))?.value || 'rochana_imesh';
         const cleanUsername = supportContact.replace('@', '');
         targetBot.sendMessage(chatId, `<tg-emoji emoji-id="5461151367559141950">📩</tg-emoji> <b>For support, please contact us below:</b>`, {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[
-              { text: `💬 ${supportBtnText}`, url: `https://t.me/${cleanUsername}` }
+              { text: `💬 Write to support`, url: `https://t.me/${cleanUsername}` }
             ]]
           }
         });
