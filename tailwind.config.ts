@@ -102,6 +102,7 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       boxShadow: {
+        '3xl': '0 35px 60px -15px rgba(0, 0, 0, 0.3)',
         '4xl': '0 50px 100px -20px rgba(0, 0, 0, 0.5)',
       },
     },
