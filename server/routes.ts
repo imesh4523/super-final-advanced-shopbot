@@ -2298,6 +2298,13 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
       const chatId = msg.chat.id;
       const parameter = match ? match[1] : null;
 
+      // Fetch branding settings
+      const storeNameSetting = await storage.getSetting("STORE_NAME");
+      const storeName = storeNameSetting?.value || "Imesh cloud store";
+
+      const supportBtnTextSetting = await storage.getSetting("SUPPORT_BTN_TEXT");
+      const supportBtnText = supportBtnTextSetting?.value || "Write to support";
+
       const baseUrl = process.env.BASE_URL || (process.env.REPL_SLUG ? `https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co` : 'https://your-domain.com');
       const shopUrl = `${baseUrl}/shop`;
 
@@ -2306,7 +2313,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
         reply_markup: {
           keyboard: [
             [{ text: '🛍️ Buy' }, { text: '👤 Profile' }, { text: '📋 Availability' }],
-            [{ text: '💬 Write to support' }, { text: '❓ FAQ' }]
+            [{ text: `💬 ${supportBtnText}` }, { text: '❓ FAQ' }]
           ],
           resize_keyboard: true
         }
@@ -2314,7 +2321,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
       // If no parameter, show the standard welcome message
       if (!parameter) {
-        targetBot.sendMessage(chatId, '<b>Welcome to Imesh cloud store !</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji>\n\n<b>Select an option below:</b> <tg-emoji emoji-id="5231102735817918643">🔖</tg-emoji>', opts);
+        targetBot.sendMessage(chatId, `<b>Welcome to ${storeName} !</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji>\n\n<b>Select an option below:</b> <tg-emoji emoji-id="5231102735817918643">🔖</tg-emoji>`, opts);
       } else if (parameter.startsWith('offer_')) {
         const offerId = parseInt(parameter.substring(6));
         const offer = await storage.getSpecialOffer(offerId);
@@ -2367,7 +2374,12 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             });
           }
         }
-        targetBot.sendMessage(chatId, '<b>Welcome to Imesh cloud store !</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji>\n\n<b>Select an option below:</b> <tg-emoji emoji-id="5231102735817918643">🔖</tg-emoji>', opts);
+        
+        // Fetch store name for fallback welcome
+        const storeNameSetting = await storage.getSetting("STORE_NAME");
+        const storeName = storeNameSetting?.value || "Imesh cloud store";
+        
+        targetBot.sendMessage(chatId, `<b>Welcome to ${storeName} !</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji>\n\n<b>Select an option below:</b> <tg-emoji emoji-id="5231102735817918643">🔖</tg-emoji>`, opts);
       }
 
       if (msg.from) {
@@ -2482,6 +2494,9 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
       // Standardize text comparison by trimming and ignoring case if necessary
       const normalizedText = text?.trim();
+      
+      const supportBtnTextSetting = await storage.getSetting("SUPPORT_BTN_TEXT");
+      const supportBtnText = supportBtnTextSetting?.value || "Write to support";
 
       if (normalizedText === '🛍️ Buy' || normalizedText === '📋 Availability' || normalizedText === 'Buy') {
         console.log(`Buy/Availability requested for user: ${userId}`);
@@ -2726,19 +2741,22 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             parse_mode: 'HTML'
           });
         }
-      } else if (normalizedText?.includes('Write to support')) {
+      } else if (normalizedText?.includes(supportBtnText)) {
         const supportContact = (await storage.getSetting('SUPPORT_CONTACT'))?.value || 'rochana_imesh';
         const cleanUsername = supportContact.replace('@', '');
         targetBot.sendMessage(chatId, `<tg-emoji emoji-id="5461151367559141950">📩</tg-emoji> <b>For support, please contact us below:</b>`, {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[
-              { text: `💬 Write to support`, url: `https://t.me/${cleanUsername}` }
+              { text: `💬 ${supportBtnText}`, url: `https://t.me/${cleanUsername}` }
             ]]
           }
         });
       } else if (normalizedText === '❓ FAQ') {
         const userName = tgUser?.firstName || 'User';
+        const supportUsernameSetting = await storage.getSetting("SUPPORT_USERNAME");
+        const supportUsername = supportUsernameSetting?.value || "@rochana_imesh";
+
         const rulesMessage = `<tg-emoji emoji-id="5413554183502572090">👋</tg-emoji> <b>Welcome, ${userName}</b> <tg-emoji emoji-id="5413554183502572090">✨</tg-emoji>\n\n` +
           `<tg-emoji emoji-id="5213181173026533794">⚠️</tg-emoji> <b>STORE RULES – PLEASE READ BEFORE BUYING</b> <tg-emoji emoji-id="5213181173026533794">⚠️</tg-emoji>\n\n` +
           `<tg-emoji emoji-id="5220091753930959575">1️⃣</tg-emoji> <b>Login Warranty Included</b>\n` +
@@ -2751,7 +2769,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           `Account usage is fully under the buyer’s responsibility.\n\n` +
           `<tg-emoji emoji-id="4958734459869332468">💯</tg-emoji> <b>Follow the rules, stay secure, and enjoy your purchase!</b> <tg-emoji emoji-id="4958734459869332468">💯</tg-emoji>\n\n` +
           `<tg-emoji emoji-id="5341498088408234504">⛱️</tg-emoji> <b>Need help or have questions?</b>\n` +
-          `<tg-emoji emoji-id="5282843764451195532">🎗️</tg-emoji> <b>Contact us:</b> <tg-emoji emoji-id="5461151367559141950">💌</tg-emoji> @rochana_imesh`;
+          `<tg-emoji emoji-id="5282843764451195532">🎗️</tg-emoji> <b>Contact us:</b> <tg-emoji emoji-id="5461151367559141950">💌</tg-emoji> ${supportUsername}`;
 
         targetBot.sendMessage(chatId, rulesMessage, { parse_mode: 'HTML' });
       } else if (tgUser?.lastAction?.startsWith('awaiting_quantity_')) {
