@@ -17,19 +17,26 @@ async function resetAdmin() {
         
         // Get the first user (assuming it's the admin)
         const allUsers = await db.select().from(users).limit(1);
+        
         if (allUsers.length === 0) {
-             console.error("No users found in database.");
-             process.exit(1);
+            console.log("No users found in database. Creating initial admin user...");
+            await db.insert(users).values({
+                email,
+                password: hashedPassword,
+                firstName: "Admin",
+                lastName: "User"
+            });
+            console.log(`\n✅ Initial Admin user created successfully!`);
+        } else {
+            const admin = allUsers[0];
+            await db.update(users)
+                .set({ email, password: hashedPassword })
+                .where(eq(users.id, admin.id));
+            console.log(`\n✅ Admin credentials updated successfully!`);
         }
-        const admin = allUsers[0];
-
-        await db.update(users)
-            .set({ email, password: hashedPassword })
-            .where(eq(users.id, admin.id));
             
-        console.log(`\n✅ Admin credentials updated successfully!`);
-        console.log(`👤 New Email: ${email}`);
-        console.log(`🔑 New Password: ${password}\n`);
+        console.log(`👤 Email: ${email}`);
+        console.log(`🔑 Password: ${password}\n`);
         
         process.exit(0);
     } catch (error) {
