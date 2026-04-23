@@ -2968,7 +2968,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           console.error('Cryptomus creation error:', err);
           targetBot.sendMessage(chatId, "❌ Failed to create Cryptomus invoice. Please try again later.");
         }
-      } else if (tgUser?.lastAction === 'awaiting_binance_deposit_amount' || tgUser?.lastAction === 'awaiting_bybit_deposit_amount') {
+      } else if (tgUser?.lastAction === 'awaiting_binance_deposit_amount') {
         const amount = parseFloat(normalizedText || "0");
 
         // Delete prompt and user input
@@ -2984,8 +2984,8 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           return;
         }
 
-        const method = tgUser.lastAction === 'awaiting_binance_deposit_amount' ? 'Binance' : 'Bybit';
-        const payIdKey = method === 'Binance' ? 'BINANCE_PAY_ID' : 'BYBIT_PAY_ID';
+        const method = 'Binance';
+        const payIdKey = 'BINANCE_PAY_ID';
         const payId = (await storage.getSetting(payIdKey))?.value || "Not Set";
 
         // Amount Locking: Check for existing pending payment with same amount
@@ -3023,40 +3023,30 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
         console.log(`Sending ${method} payment message with keyboard:`, JSON.stringify(keyboard));
 
-        if (method === 'Binance') {
-          const imagePath = path.resolve(process.cwd(), 'public/assets/binance_pay_new.png');
-          console.log(`Checking for Binance Pay image at: ${imagePath}`);
+        const imagePath = path.resolve(process.cwd(), 'public/assets/binance_pay_new.png');
+        console.log(`Checking for Binance Pay image at: ${imagePath}`);
 
-          try {
-            if (fs.existsSync(imagePath)) {
-              console.log('Binance Pay image found, sending as stream...');
-              const photoStream = fs.createReadStream(imagePath);
-              targetBot.sendPhoto(chatId, photoStream, {
-                caption: response,
-                parse_mode: 'HTML',
-                reply_markup: {
-                  inline_keyboard: keyboard
-                }
-              }).catch(err => {
-                console.error('Failed to send Binance photo from stream:', err);
-                targetBot.sendMessage(chatId, response, {
-                  parse_mode: 'Markdown',
-                  reply_markup: {
-                    inline_keyboard: keyboard
-                  }
-                });
-              });
-            } else {
-              console.log('Binance Pay image NOT found at', imagePath);
+        try {
+          if (fs.existsSync(imagePath)) {
+            console.log('Binance Pay image found, sending as stream...');
+            const photoStream = fs.createReadStream(imagePath);
+            targetBot.sendPhoto(chatId, photoStream, {
+              caption: response,
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: keyboard
+              }
+            }).catch(err => {
+              console.error('Failed to send Binance photo from stream:', err);
               targetBot.sendMessage(chatId, response, {
                 parse_mode: 'Markdown',
                 reply_markup: {
                   inline_keyboard: keyboard
                 }
               });
-            }
-          } catch (fsErr) {
-            console.error('File system error during Binance image check:', fsErr);
+            });
+          } else {
+            console.log('Binance Pay image NOT found at', imagePath);
             targetBot.sendMessage(chatId, response, {
               parse_mode: 'Markdown',
               reply_markup: {
@@ -3064,7 +3054,8 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
               }
             });
           }
-        } else {
+        } catch (fsErr) {
+          console.error('File system error during Binance image check:', fsErr);
           targetBot.sendMessage(chatId, response, {
             parse_mode: 'Markdown',
             reply_markup: {
@@ -3633,13 +3624,10 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
         } catch (err) { }
 
         const binanceEnabled = (await storage.getSetting('PAYMENT_BINANCE_ENABLED'))?.value !== 'false';
-        const bybitEnabled = (await storage.getSetting('PAYMENT_BYBIT_ENABLED'))?.value !== 'false';
         const cryptomusEnabled = (await storage.getSetting('PAYMENT_CRYPTOMUS_ENABLED'))?.value !== 'false';
-
         const keyboard = [];
         const mainRow = [];
         if (binanceEnabled) mainRow.push({ text: '💳 Binance', callback_data: 'payment_binance' });
-        if (bybitEnabled) mainRow.push({ text: '💰 Bybit', callback_data: 'payment_bybit' });
         if (mainRow.length > 0) keyboard.push(mainRow);
 
         if (cryptomusEnabled) {
@@ -3655,14 +3643,14 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           parse_mode: 'HTML',
           reply_markup: { inline_keyboard: keyboard }
         });
-      } else if (data === 'payment_binance' || data === 'payment_bybit') {
+      } else if (data === 'payment_binance') {
         try {
           if (query.message) {
             await targetBot.deleteMessage(chatId, query.message.message_id);
           }
         } catch (err) { }
 
-        const method = data === 'payment_binance' ? 'Binance' : 'Bybit';
+        const method = 'Binance';
 
         // Delete any existing amount prompts before sending a new one
         try {
@@ -3676,15 +3664,9 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           parse_mode: 'HTML'
         });
         await storage.updateTelegramUserByChatId(chatId.toString(), {
-          lastAction: `awaiting_${method.toLowerCase()}_deposit_amount`,
+          lastAction: `awaiting_binance_deposit_amount`,
           lastMessageId: prompt?.message_id
         });
-      } else if (data.startsWith('bybit_transferred_')) {
-        const parts = data.split('_');
-        const amount = parts[2];
-        const paymentId = parts[3];
-        await storage.updateTelegramUserByChatId(userId, { lastAction: `awaiting_bybit_hash_${amount}_${paymentId}` });
-        targetBot.sendMessage(chatId, `💰 *Bybit Verification*\n\nPlease enter the *Transaction Hash* (Transfer ID) for your $${amount} payment:`, { parse_mode: 'Markdown' });
       } else if (data === 'payment_cryptomus') {
         try {
           if (query.message) {
@@ -3824,82 +3806,6 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
                   targetBot.deleteMessage(chatId, sentMsg.message_id).catch(() => { });
                 }, 15000);
               }
-            }
-          } else if (payment.paymentMethod === 'bybit') {
-            const apiKey = (await storage.getSetting('BYBIT_API_KEY'))?.value;
-            const secretKey = (await storage.getSetting('BYBIT_SECRET_KEY'))?.value;
-
-            if (!apiKey || !secretKey) {
-              if (checkingMsg) await targetBot.deleteMessage(chatId, checkingMsg.message_id).catch(() => { });
-              return targetBot.answerCallbackQuery(query.id, {
-                text: "⚠️ Automatic verification is not configured for Bybit. Please contact support.",
-                show_alert: true
-              });
-            }
-
-            try {
-              const timestamp = Date.now();
-              const recvWindow = 5000;
-              const queryStr = `coin=USDT&limit=50`;
-
-              // Bybit V5 Signature for GET requests: timestamp + apiKey + recvWindow + query
-              const signData = timestamp + apiKey + recvWindow + queryStr;
-              const signature = crypto
-                .createHmac('sha256', secretKey)
-                .update(signData)
-                .digest('hex');
-
-              const response = await axios.get(`https://api.bybit.com/v5/asset/transfer/query-inter-transfer-list?${queryStr}`, {
-                headers: {
-                  'X-BAPI-API-KEY': apiKey,
-                  'X-BAPI-SIGN': signature,
-                  'X-BAPI-TIMESTAMP': timestamp.toString(),
-                  'X-BAPI-RECV-WINDOW': recvWindow.toString(),
-                }
-              });
-
-              if (checkingMsg) await targetBot.deleteMessage(chatId, checkingMsg.message_id).catch(() => { });
-
-              if (response.data && response.data.retCode === 0) {
-                const transfers = response.data.result.list || [];
-                const expectedAmount = (payment.amount / 100).toString();
-
-                // Get already processed external IDs for this user
-                const processedExternalIds = (await db.select({ extId: payments.externalId })
-                  .from(payments)
-                  .where(and(eq(payments.telegramUserId, tgUser.id), eq(payments.status, 'completed'))))
-                  .map(p => p.extId);
-
-                const match = transfers.find((tx: any) => {
-                  return tx.amount === expectedAmount && tx.status === 'SUCCESS' && !processedExternalIds.includes(tx.transferId);
-                });
-
-                if (match) {
-                  const existingSuccess = await db.select().from(payments).where(and(eq(payments.externalId, match.transferId), eq(payments.status, 'completed'))).limit(1);
-                  if (existingSuccess.length > 0) {
-                    return targetBot.answerCallbackQuery(query.id, {
-                      text: "⚠️ This transaction has already been credited.",
-                      show_alert: true
-                    });
-                  }
-
-                  await storage.updateTelegramUser(tgUser.id, {
-                    balance: tgUser.balance + payment.amount
-                  });
-                  await storage.updatePayment(payment.id, {
-                    status: 'completed',
-                    externalId: match.transferId
-                  });
-                  targetBot.sendMessage(chatId, `✅ Bybit payment verified! $${expectedAmount} added to balance.`);
-                } else {
-                  targetBot.sendMessage(chatId, "❌ Bybit transaction not found. Please ensure the transfer is completed.");
-                }
-              } else {
-                targetBot.sendMessage(chatId, "❌ Error checking Bybit payment.");
-              }
-            } catch (err) {
-              if (checkingMsg) await targetBot.deleteMessage(chatId, checkingMsg.message_id).catch(() => { });
-              targetBot.sendMessage(chatId, "❌ Failed to connect to Bybit API.");
             }
           } else if (payment.paymentMethod === 'cryptomus') {
             const merchantId = (await storage.getSetting('CRYPTOMUS_MERCHANT_ID'))?.value;
