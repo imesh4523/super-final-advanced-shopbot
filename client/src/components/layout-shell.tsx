@@ -105,7 +105,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-6 h-6 text-white" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-80 p-0 bg-black/80 border-r border-white/5 backdrop-blur-3xl flex flex-col">
+        <SheetContent side="left" className="w-80 p-0 bg-purple-950/80 border-r border-white/5 backdrop-blur-3xl flex flex-col">
           <div className="flex-1 overflow-y-auto">
             <NavContent />
           </div>
@@ -144,7 +144,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {/* Header - Mobile Only (User Menu) */}
-        <header className="lg:hidden h-24 flex items-center justify-end gap-4 px-8 border-b border-white/5 bg-black/20 backdrop-blur-md sticky top-0 z-20">
+        <header className="lg:hidden h-24 flex items-center justify-end gap-4 px-8 border-b border-white/5 bg-purple-950/20 backdrop-blur-md sticky top-0 z-20">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
