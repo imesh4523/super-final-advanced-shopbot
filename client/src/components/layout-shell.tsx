@@ -105,7 +105,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-6 h-6 text-white" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-80 p-0 bg-[#5b21b6] border-r border-white/5 flex flex-col">
+        <SheetContent side="left" className="w-80 p-0 bg-[#0f0a1a] border-r border-white/5 flex flex-col">
           <div className="flex-1 overflow-y-auto">
             <NavContent />
           </div>
@@ -119,7 +119,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       </Sheet>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col fixed inset-y-6 left-6 z-30 w-80 glass-panel rounded-[2.5rem] border-white/10 shadow-3xl overflow-hidden group">
+      <aside className="hidden lg:flex flex-col fixed inset-y-6 left-6 z-30 w-80 bg-[#0f0a1a] rounded-[2.5rem] border border-white/10 shadow-3xl overflow-hidden group">
         <div className="flex-1 overflow-hidden min-h-0">
           <NavContent />
         </div>
