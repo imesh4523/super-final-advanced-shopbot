@@ -18,6 +18,7 @@ export default function SettingsPage() {
   const [cryptomusMerchantId, setCryptomusMerchantId] = useState("");
   const [binanceApiKey, setBinanceApiKey] = useState("");
   const [binanceSecretKey, setBinanceSecretKey] = useState("");
+  const [binancePayId, setBinancePayId] = useState("");
   const [faqText, setFaqText] = useState("");
   const [howToBuyVideo, setHowToBuyVideo] = useState("");
   const [howToDepositVideo, setHowToDepositVideo] = useState("");

@@ -72,7 +72,7 @@
   --input: 265 60% 15%;
   --ring: 275 90% 65%;
 
-  --bg-gradient: linear-gradient(135deg, #2e1065 0%, #5b21b6 50%, #2e1065 100%);
+  --bg-gradient: linear-gradient(135deg, #3b0764 0%, #6d28d9 50%, #3b0764 100%);
 }
 
 @layer base {
