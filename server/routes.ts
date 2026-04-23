@@ -2313,7 +2313,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
         reply_markup: {
           keyboard: [
             [{ text: '🛍️ Buy' }, { text: '👤 Profile' }, { text: '📋 Availability' }],
-            [{ text: '💬 Write to support' }, { text: '❓ FAQ' }]
+            [{ text: supportBtnText }, { text: '❓ FAQ' }]
           ],
           resize_keyboard: true
         }
@@ -2741,14 +2741,15 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             parse_mode: 'HTML'
           });
         }
-      } else if (normalizedText?.includes('Write to support')) {
-        const supportContact = (await storage.getSetting('SUPPORT_CONTACT'))?.value || 'rochana_imesh';
-        const cleanUsername = supportContact.replace('@', '');
+      } else if (normalizedText === supportBtnText || normalizedText?.includes(supportBtnText)) {
+        const supportUsernameSetting = await storage.getSetting("SUPPORT_USERNAME");
+        const supportUsername = supportUsernameSetting?.value || "@rochana_imesh";
+        const cleanUsername = supportUsername.replace('@', '');
         targetBot.sendMessage(chatId, `<tg-emoji emoji-id="5461151367559141950">📩</tg-emoji> <b>For support, please contact us below:</b>`, {
           parse_mode: 'HTML',
           reply_markup: {
             inline_keyboard: [[
-              { text: `💬 Write to support`, url: `https://t.me/${cleanUsername}` }
+              { text: supportBtnText, url: `https://t.me/${cleanUsername}` }
             ]]
           }
         });
