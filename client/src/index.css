@@ -44,23 +44,23 @@
 
 .dark {
   /* Ultra-Premium Purple Dark Palette */
-  --background: 270 45% 12%;
+  --background: 270 50% 30%;
   --foreground: 260 30% 98%;
 
-  --card: 270 45% 20%;
+  --card: 270 50% 35%;
   --card-foreground: 260 30% 98%;
 
-  --popover: 270 45% 15%;
+  --popover: 270 50% 30%;
   --popover-foreground: 260 30% 98%;
 
   --primary: 275 90% 65%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 270 45% 25%;
+  --secondary: 270 50% 40%;
   --secondary-foreground: 260 30% 98%;
 
-  --muted: 270 30% 25%;
-  --muted-foreground: 260 20% 80%;
+  --muted: 270 40% 40%;
+  --muted-foreground: 260 20% 85%;
 
   --accent: 275 90% 65%;
   --accent-foreground: 0 0% 100%;
@@ -68,11 +68,11 @@
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 270 45% 25%;
-  --input: 270 45% 25%;
+  --border: 270 50% 45%;
+  --input: 270 50% 45%;
   --ring: 275 90% 65%;
 
-  --bg-gradient: linear-gradient(180deg, #311b47 0%, #1a0b2e 100%);
+  --bg-gradient: linear-gradient(180deg, #6d28d9 0%, #4c1d95 100%);
 }
 
 @layer base {
