@@ -92,7 +92,7 @@
 }
 
 .glass-panel {
-  @apply bg-white/60 dark:bg-purple-950/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-4xl;
+  @apply bg-white/60 dark:bg-purple-800/40 backdrop-blur-3xl border border-white/20 dark:border-white/10 shadow-4xl;
 }
 
 .glass-card {

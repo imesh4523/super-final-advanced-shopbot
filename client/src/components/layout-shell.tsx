@@ -105,7 +105,7 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
             <Menu className="w-6 h-6 text-white" />
           </Button>
         </SheetTrigger>
-        <SheetContent side="left" className="w-80 p-0 bg-purple-950/80 border-r border-white/5 backdrop-blur-3xl flex flex-col">
+        <SheetContent side="left" className="w-80 p-0 bg-purple-800/90 border-r border-white/5 backdrop-blur-3xl flex flex-col">
           <div className="flex-1 overflow-y-auto">
             <NavContent />
           </div>
@@ -136,8 +136,8 @@ export function LayoutShell({ children }: { children: React.ReactNode }) {
       {/* Main Content */}
       <main className="lg:pl-[23rem] min-h-screen flex flex-col relative z-10">
         <div className="fixed bottom-6 right-10 z-50 pointer-events-none select-none hidden lg:block group/float">
-          <div className="relative px-4 py-2 bg-white/5 backdrop-blur-md border border-white/10 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.3)] transform transition-all duration-700 hover:scale-110 hover:-translate-y-2 group-hover/float:shadow-purple-500/20">
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-full blur-md opacity-50 animate-pulse" />
+          <div className="relative px-4 py-2 bg-purple-900/40 backdrop-blur-3xl border border-purple-500/20 rounded-full shadow-[0_8px_32px_rgba(0,0,0,0.3)] transform transition-all duration-700 hover:scale-110 hover:-translate-y-2 group-hover/float:shadow-purple-500/20">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-indigo-600/20 rounded-full blur-md opacity-50 animate-pulse" />
             <span className="relative text-[10px] font-black uppercase tracking-[0.3em] text-white/40 whitespace-nowrap drop-shadow-lg">
               Designed by <span className="text-purple-400">Rochana Imesh</span>
             </span>
