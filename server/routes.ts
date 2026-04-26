@@ -25,6 +25,14 @@ import session from "express-session";
 import connectPg from "connect-pg-simple";
 import { format } from "date-fns";
 
+function escapeHTML(str: string): string {
+  if (!str) return '';
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 declare module "express-session" {
   interface SessionData {
     userId: number;
@@ -2533,9 +2541,9 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             else if (catLower.includes('azure')) catIcon = '<tg-emoji emoji-id="6235420094265037090">☁️</tg-emoji> ';
             else if (catLower.includes('kamatera')) catIcon = '<tg-emoji emoji-id="6235239937566838722">☁️</tg-emoji> ';
 
-            response += `➖➖➖ ${catIcon}<b>${category}</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji> ➖➖➖\n`;
+            response += `➖➖➖ ${catIcon}<b>${escapeHTML(category)}</b> <tg-emoji emoji-id="5456343263340405032">🛍</tg-emoji> ➖➖➖\n`;
             for (const item of items) {
-              let formattedName = item.name.replace(/🇱🇰/g, '<tg-emoji emoji-id="5224277294050192388">🇱🇰</tg-emoji>');
+              let formattedName = escapeHTML(item.name).replace(/🇱🇰/g, '<tg-emoji emoji-id="5224277294050192388">🇱🇰</tg-emoji>');
 
               // Also add custom icons to AWS names if it starts with AWS but avoid double tagging 
               if (!formattedName.includes('5785025630055700143')) {
@@ -2780,21 +2788,38 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
         // Basic validation outside tx
         if (isNaN(quantity) || quantity <= 0) return targetBot.sendMessage(chatId, "❌ Please enter a valid number.");
 
+        const product = await storage.getProduct(productId);
+        if (!product) return targetBot.sendMessage(chatId, "❌ Product not found.");
+
+        const stock = await storage.getCredentialsByProduct(productId);
+        const availableStock = stock.filter(c => c.status === 'available').length;
+
+        if (quantity > availableStock) {
+          return targetBot.sendMessage(chatId, `❌ You can enter maximum ${availableStock} pcs only.`);
+        }
+
         try {
           const result = await db.transaction(async (tx) => {
             // 1. Get user and product inside transaction
             const user = await tx.query.telegramUsers.findFirst({
               where: eq(telegramUsers.id, tgUser.id)
             });
-            const product = await tx.query.products.findFirst({
-              where: eq(products.id, productId)
-            });
 
-            if (!user || !product) throw new Error("Product or User not found.");
+            if (!user) throw new Error("User not found.");
 
             const totalPrice = product.price * quantity;
 
-            // 2. Atomic Balance check and deduction
+            // 2. Stock check first inside transaction
+            const availableCredentials = await tx.query.credentials.findMany({
+              where: and(eq(credentials.productId, productId), eq(credentials.status, 'available')),
+              limit: quantity
+            });
+
+            if (availableCredentials.length < quantity) {
+              throw new Error(`Sorry, only ${availableCredentials.length} Pcs remaining.`);
+            }
+
+            // 3. Atomic Balance check and deduction
             const [updatedUser] = await tx
               .update(telegramUsers)
               .set({
@@ -2804,16 +2829,6 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
               .returning();
 
             if (!updatedUser) throw new Error("Insufficient balance");
-
-            // 3. Stock check and selection inside transaction
-            const availableCredentials = await tx.query.credentials.findMany({
-              where: and(eq(credentials.productId, productId), eq(credentials.status, 'available')),
-              limit: quantity
-            });
-
-            if (availableCredentials.length < quantity) {
-              throw new Error(`Sorry, only ${availableCredentials.length} Pcs remaining.`);
-            }
 
             // 4. Mark credentials as sold and create orders
             for (const cred of availableCredentials) {
@@ -2841,17 +2856,14 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           let productName = result.product.name.replace(/🇱🇰/g, '<tg-emoji emoji-id="5224277294050192388">🇱🇰</tg-emoji>');
           productName = productName.replace(/\bAWS\b/gi, '<tg-emoji emoji-id="5785025630055700143">☁️</tg-emoji> AWS');
 
-          const itemsText = result.availableCredentials.map((c, index) => `<b>${(index + 1).toString().padStart(2, '0')}.</b>\n${c.content}`).join('\n\n');
+          const itemsText = result.availableCredentials.map((c, index) => `<b>${(index + 1).toString().padStart(2, '0')}.</b>\n${escapeHTML(c.content)}`).join('\n\n');
 
           await targetBot.sendMessage(chatId, `<tg-emoji emoji-id="6276090299232031662">✅</tg-emoji> <b>Purchase successful!</b> <tg-emoji emoji-id="5431411862950388510">🙏</tg-emoji>\n\n<b>Product:</b> ${productName}\n<b>Quantity:</b> ${quantity}\n<b>Total:</b> $${(result.totalPrice / 100).toFixed(2)}\n\n<b>Your items:</b>\n\n${itemsText}`, { parse_mode: 'HTML' });
 
         } catch (err: any) {
           console.error('Normal purchase error:', err);
           if (err.message === "Insufficient balance") {
-            // Recalculate price for the message since it's a known product
-            const product = await storage.getProduct(parseInt(tgUser.lastAction!.split('_')[2]));
-            const quantity = parseInt(normalizedText || "0");
-            const totalPrice = (product?.price || 0) * quantity;
+            const totalPrice = product.price * quantity;
             
             const errorMsg = `<tg-emoji emoji-id="5215209935188534658">❌</tg-emoji> <b>Insufficient Balance!</b>\n\n` +
               `Your current balance is <b>$${(tgUser.balance / 100).toFixed(2)}</b>, but this purchase costs <b>$${(totalPrice / 100).toFixed(2)}</b>.\n\n` +
@@ -3065,70 +3077,6 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
           });
         }
       } else if (tgUser?.lastAction?.startsWith('awaiting_screenshot_') && msg.photo) {
-        const parts = tgUser.lastAction.split('_');
-        const method = parts[2];
-        const amount = parts[3];
-        await storage.createPayment({
-          telegramUserId: tgUser.id,
-          amount: parseFloat(amount) * 100,
-          currency: 'USD',
-          status: 'pending',
-          paymentMethod: method,
-          cryptomusUuid: msg.photo[msg.photo.length - 1].file_id
-        });
-        await storage.updateTelegramUser(tgUser.id, { lastAction: null });
-        targetBot.sendMessage(chatId, `✅ Screenshot received! Deposit of $${amount} via ${method} is being reviewed.`);
-      } else if (tgUser?.lastAction?.startsWith('awaiting_quantity_')) {
-        const productId = parseInt(tgUser.lastAction.split('_')[2]);
-        const quantity = parseInt(normalizedText || "0");
-        const product = await storage.getProduct(productId);
-
-        if (!product) return targetBot.sendMessage(chatId, "❌ Product not found.");
-        if (isNaN(quantity) || quantity <= 0) return targetBot.sendMessage(chatId, "❌ Please enter a valid number.");
-
-        const stock = await storage.getCredentialsByProduct(product.id);
-        const availableCredentials = stock.filter(c => c.status === 'available');
-
-        if (quantity > availableCredentials.length) {
-          return targetBot.sendMessage(chatId, `❌ Sorry, only ${availableCredentials.length} Pcs available.`);
-        }
-
-        const totalPrice = product.price * quantity;
-        if (tgUser.balance < totalPrice) {
-          const errorMsg = `<tg-emoji emoji-id="5215209935188534658">❌</tg-emoji> <b>Insufficient Balance!</b>\n\n` +
-            `Your current balance is <b>$${(tgUser.balance / 100).toFixed(2)}</b>, but this purchase costs <b>$${(totalPrice / 100).toFixed(2)}</b>.\n\n` +
-            `Please top up your account to continue. <tg-emoji emoji-id="5231102735817918643">💸</tg-emoji>`;
-
-          return targetBot.sendMessage(chatId, errorMsg, {
-            parse_mode: 'HTML',
-            reply_markup: {
-              inline_keyboard: [[{ text: '💰 Add Now (Top-up)', callback_data: 'add_funds' }]]
-            }
-          });
-        }
-
-        // Process purchase
-        for (let i = 0; i < quantity; i++) {
-          const credential = availableCredentials[i];
-          await storage.createOrder({
-            telegramUserId: tgUser.id,
-            productId: product.id,
-            credentialId: credential.id,
-            status: 'completed'
-          });
-          await storage.markCredentialSold(credential.id);
-        }
-
-        await storage.updateTelegramUser(tgUser.id, {
-          balance: tgUser.balance - totalPrice,
-          lastAction: null
-        });
-
-        let productName = product.name.replace(/🇱🇰/g, '<tg-emoji emoji-id="5224277294050192388">🇱🇰</tg-emoji>');
-        productName = productName.replace(/\bAWS\b/gi, '<tg-emoji emoji-id="5785025630055700143">☁️</tg-emoji> AWS');
-
-        const items = availableCredentials.slice(0, quantity).map((c, index) => `<b>${(index + 1).toString().padStart(2, '0')}.</b>\n${c.content}`).join('\n\n');
-        targetBot.sendMessage(chatId, `<tg-emoji emoji-id="6276090299232031662">✅</tg-emoji> <b>Purchase successful!</b> <tg-emoji emoji-id="5431411862950388510">🙏</tg-emoji>\n\n<b>Product:</b> ${productName}\n<b>Quantity:</b> ${quantity}\n<b>Total:</b> $${(totalPrice / 100).toFixed(2)}\n\n<b>Your items:</b>\n\n${items}`, { parse_mode: 'HTML' });
       }
     });
 
@@ -3417,7 +3365,9 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
             : '';
 
           batch.forEach((order, index) => {
-            historyText += `<b>${i + index + 1}.</b> <tg-emoji emoji-id="6276134137963222688">🛍</tg-emoji> <b>${order.product?.name || 'Unknown'}</b>\n<tg-emoji emoji-id="5201692367437974073">💰</tg-emoji> $${((order.product?.price || 0) / 100).toFixed(2)}\n<tg-emoji emoji-id="6276090299232031662">🔑</tg-emoji> <code>${order.credential?.content || 'N/A'}</code>\n\n`;
+            const safeName = escapeHTML(order.product?.name || 'Unknown');
+            const safeContent = escapeHTML(order.credential?.content || 'N/A');
+            historyText += `<b>${i + index + 1}.</b> <tg-emoji emoji-id="6276134137963222688">🛍</tg-emoji> <b>${safeName}</b>\n<tg-emoji emoji-id="5201692367437974073">💰</tg-emoji> $${((order.product?.price || 0) / 100).toFixed(2)}\n<tg-emoji emoji-id="6276090299232031662">🔑</tg-emoji> <code>${safeContent}</code>\n\n`;
           });
 
           await targetBot.sendMessage(chatId, historyText, { parse_mode: 'HTML' });
