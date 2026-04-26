@@ -400,7 +400,17 @@ export async function registerRoutes(
 
         const totalPrice = product.price * quantity;
 
-        // 2. Check and Deduct balance atomically
+        // 2. Check stock first
+        const availableItems = await tx.query.credentials.findMany({
+          where: and(eq(credentials.productId, productId), eq(credentials.status, 'available')),
+          limit: quantity
+        });
+
+        if (availableItems.length < quantity) {
+          throw new Error(`Insufficient stock. Only ${availableItems.length} items available.`);
+        }
+
+        // 3. Check and Deduct balance atomically
         const [updatedUser] = await tx
           .update(telegramUsers)
           .set({
@@ -411,16 +421,6 @@ export async function registerRoutes(
 
         if (!updatedUser) {
           throw new Error("Insufficient balance");
-        }
-
-        // 3. Get available stock and mark as sold
-        const availableItems = await tx.query.credentials.findMany({
-          where: and(eq(credentials.productId, productId), eq(credentials.status, 'available')),
-          limit: quantity
-        });
-
-        if (availableItems.length < quantity) {
-          throw new Error(`Insufficient stock. Only ${availableItems.length} items available.`);
         }
 
         const itemIds = availableItems.map(item => item.id);
@@ -2784,6 +2784,7 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
       } else if (tgUser?.lastAction?.startsWith('awaiting_quantity_')) {
         const productId = parseInt(tgUser.lastAction.split('_')[2]);
         const quantity = parseInt(normalizedText || "0");
+        console.log(`[Purchase] User ${chatId} entered quantity: ${quantity} for product: ${productId}`);
 
         // Basic validation outside tx
         if (isNaN(quantity) || quantity <= 0) return targetBot.sendMessage(chatId, "❌ Please enter a valid number.");
@@ -2793,9 +2794,11 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
         const stock = await storage.getCredentialsByProduct(productId);
         const availableStock = stock.filter(c => c.status === 'available').length;
+        console.log(`[Purchase] Product: ${product.name}, Available Stock: ${availableStock}, Requested: ${quantity}`);
 
         if (quantity > availableStock) {
-          return targetBot.sendMessage(chatId, `❌ You can enter maximum ${availableStock} pcs only.`);
+          console.log(`[Purchase] Rejecting due to insufficient stock: ${quantity} > ${availableStock}`);
+          return targetBot.sendMessage(chatId, `❌ Sorry, you can enter maximum ${availableStock} pcs only for this product.`);
         }
 
         try {
@@ -3224,7 +3227,17 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
         try {
           const result = await db.transaction(async (tx) => {
-            // 1. Double check and Deduct balance atomically
+            // 1. Stock check and selection inside transaction
+            const availableCredentials = await tx.query.credentials.findMany({
+              where: and(eq(credentials.productId, product.id), eq(credentials.status, 'available')),
+              limit: offer.bundleQuantity || 1
+            });
+
+            if (availableCredentials.length < (offer.bundleQuantity || 1)) {
+              throw new Error(`Not enough stock. (Required: ${offer.bundleQuantity || 1}, Available: ${availableCredentials.length})`);
+            }
+
+            // 2. Double check and Deduct balance atomically
             const [updatedUser] = await tx
               .update(telegramUsers)
               .set({
@@ -3235,16 +3248,6 @@ const setupBotHandlers = (targetBot: TelegramBot) => {
 
             if (!updatedUser) {
               throw new Error("Insufficient balance");
-            }
-
-            // 2. Stock check and selection inside transaction
-            const availableCredentials = await tx.query.credentials.findMany({
-              where: and(eq(credentials.productId, product.id), eq(credentials.status, 'available')),
-              limit: offer.bundleQuantity || 1
-            });
-
-            if (availableCredentials.length < (offer.bundleQuantity || 1)) {
-              throw new Error(`Not enough stock. (Required: ${offer.bundleQuantity || 1}, Available: ${availableCredentials.length})`);
             }
 
             // 3. Mark credentials as sold and create orders
